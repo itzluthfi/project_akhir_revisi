@@ -1,7 +1,3 @@
-<?php
-// var_dump($_COOKIE['user_login']);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,7 +1,8 @@
 <?php 
 //require_once "/laragon/www/project_akhir/model/modelRole.php"; 
-require_once "/laragon/www/project_akhir/init.php";   
-include "/laragon/www/project_akhir/auth_check.php";    
+require_once __DIR__ . '../../../init.php';
+
+require_once __DIR__ . '../../../auth_check.php';
 $obj_role = $modelRole->getAllRole(); 
 $obj_member = $modelMember->getAllMembers(); 
 $obj_item = $modelItem->getAllItem(); 

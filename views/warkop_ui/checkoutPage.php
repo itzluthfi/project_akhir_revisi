@@ -6,8 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idAnggota = isset($_POST['member_id']) ? htmlspecialchars($_POST['member_id']) : 'Tamu';
 } else {
     // Jika tidak ada data POST, redirect ke halaman sebelumnya
-    header("Location: ./cartPage.php");
+    echo "<script>window.history.back();</script>";
     exit;
+   
 }
 ?>
 

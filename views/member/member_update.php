@@ -1,5 +1,6 @@
 <?php
-    require_once "/laragon/www/project_akhir/init.php";
+     require_once __DIR__ . '../../../init.php';
+
 
     // Get member data based on the ID received from the URL
     $obj_member = $modelMember->getMemberById($_GET['id']);

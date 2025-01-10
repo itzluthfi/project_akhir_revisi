@@ -1,5 +1,6 @@
 <?php
-    require_once "/laragon/www/project_akhir/init.php";
+     require_once __DIR__ . '../../../init.php';
+
 
     // Mengambil data item berdasarkan ID yang diterima dari URL
     $obj_items = $modelItem->getItemById($_GET['id']);

@@ -1,5 +1,6 @@
 <?php
-    require_once "/laragon/www/project_akhir/init.php";
+     require_once __DIR__ . '../../../init.php';
+
 
     $obj_user = $modelUser->getUserById($_GET['id']);
    

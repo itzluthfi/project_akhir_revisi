@@ -1,5 +1,5 @@
 <?php
-require_once "/laragon/www/project_akhir/init.php";
+require_once __DIR__ . '/init.php';
 
 // Check request method (POST atau GET)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET') {

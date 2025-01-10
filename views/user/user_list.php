@@ -1,8 +1,6 @@
 <?php
-//require_once "/laragon/www/project_akhir/model/modelUser.php";
-require_once "/laragon/www/project_akhir/init.php";
-
-include "/laragon/www/project_akhir/auth_check.php"; 
+ require_once __DIR__ . '../../../init.php';
+ require_once __DIR__ . '../../../auth_check.php';
 
 
 $obj_user = $modelUser->getAllUser();

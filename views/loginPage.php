@@ -1,7 +1,3 @@
-<?php
-// var_dump($_COOKIE['user_login']);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,10 +25,10 @@
     <!-- Container -->
     <div class="relative flex flex-wrap min-h-screen items-center justify-center py-10 ">
 
-        <!-- Background Video -->
-        <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover z-0 opacity-75">
-            <source src="public/img/bg-coffe2.mp4" type="video/mp4">
-        </video>
+        <!-- Background Img -->
+        <div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-75"
+            style="background-image: url('public/img/bg-coffe.jpg');"></div>
+
 
         <!-- Overlay to darken video -->
         <div class="absolute inset-0 bg-black opacity-50 z-10"></div>
@@ -83,14 +79,11 @@
                 </div> -->
             </div>
 
-            <!-- Login Video Banner -->
+            <!-- Login Image Banner -->
             <div class="flex items-center justify-center bg-gray-300 relative transition-opacity opacity-70 hover:opacity-100 duration-1000"
-                style="width: 24rem; height: 32rem;">
-                <video autoplay muted loop class="object-cover w-full h-full  ">
-                    <source src="public/img/bg-coffe2.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                style="width: 24rem; height: 32rem; background-image: url('public/img/bg-coffe.jpg'); background-size: cover; background-position: center;">
             </div>
+
         </div>
 
     </div>

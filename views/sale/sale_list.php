@@ -1,6 +1,7 @@
 <?php
-require_once "/laragon/www/project_akhir/init.php";
-require_once "/laragon/www/project_akhir/auth_check.php";
+require_once __DIR__ . '../../../init.php';
+
+require_once __DIR__ . '../../../auth_check.php';
 $sales = $modelSale->getAllSales();
 ?>
 

@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_login'])) {
         $_SESSION['user_login'] = $_COOKIE['user_login'];
     } else {
         // Redirect ke login jika tidak ada sesi atau cookie
-        header('Location: /project_akhir/');
+        header('Location: ../../index.php');
         exit();
     }
 }

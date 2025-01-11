@@ -1,14 +1,15 @@
 <?php
-require_once "/laragon/www/project_akhir/domain_object/node_cart.php";
-require_once "/laragon/www/project_akhir/model/dbConnect.php";
+
+require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../domain_object/node_cart.php';
 
 class modelCart {
     private $db;
     private $carts = [];
 
     public function __construct() {
-        // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
+        // Gunakan koneksi database global
+        $this->db = Databases::getInstance();
 
         if (isset($_SESSION['carts'])) {
             // Ambil data dari sesi

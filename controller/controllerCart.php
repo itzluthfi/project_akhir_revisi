@@ -38,7 +38,7 @@ class ControllerCart {
                 }
                 break;
 
-            case 'remove':
+            case 'delete':
                 if (isset($_GET['id'])) {
                     $cart_id = $_GET['id'];
                     if ($this->modelCart->removeCartItem($cart_id)) {
@@ -51,10 +51,10 @@ class ControllerCart {
                 }
                 break;
 
-            case 'checkout':
-                $this->modelCart->checkout();
-                $message = "Checkout successful! Your cart has been cleared.";
-                break;
+            // case 'checkout':
+            //     $this->modelCart->checkout();
+            //     $message = "Checkout successful! Your cart has been cleared.";
+            //     break;
 
             default:
                 $message = "Action not recognized for cart.";

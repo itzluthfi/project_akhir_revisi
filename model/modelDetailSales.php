@@ -1,13 +1,16 @@
 <?php
 
-require_once "/laragon/www/project_akhir/domain_object/node_detailSales.php"; // Jika Anda membutuhkan node lainnya
+require_once __DIR__ . '../../domain_object/node_detailSales.php';
+require_once __DIR__ . '/dbConnectNew.php';
 
 class modelDetailSale {
     private $db;
 
     public function __construct() {
         // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
+        $this->db = Databases::getInstance();
+
+        
     }
 
     // Menambahkan detail sale baru

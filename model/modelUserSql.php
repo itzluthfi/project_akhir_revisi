@@ -1,7 +1,11 @@
 <?php
 
-require_once "/laragon/www/project_akhir/domain_object/node_user.php";  // Jika Anda masih ingin menggunakan node
-include_once "/laragon/www/project_akhir/model/dbConnect.php";
+// require_once "/laragon/www/project_akhir/domain_object/node_user.php";  // Jika Anda masih ingin menggunakan node
+// include_once "/laragon/www/project_akhir/model/dbConnect.php";
+
+require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../domain_object/node_user.php';
+
 
 
 class modelUser {
@@ -9,9 +13,8 @@ class modelUser {
 
     public function __construct() {
         // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
-        // Cek dan inisialisasi user default jika belum ada
-        $this->initializeDefaultUser();
+        $this->db = Databases::getInstance();
+        $this->initializeDefaultUser(); // Anda bisa menambahkan ini jika ingin menambahkan item default saat pertama kali  
     }
 
     public function initializeDefaultUser() {

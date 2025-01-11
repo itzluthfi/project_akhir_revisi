@@ -1,15 +1,22 @@
 <?php
 
-require_once "/laragon/www/project_akhir/model/dbConnect.php";
-require_once "/laragon/www/project_akhir/domain_object/node_sale.php";
-require_once "/laragon/www/project_akhir/domain_object/node_detailSale.php";
+// require_once "/laragon/www/project_akhir/model/dbConnect.php";
+// require_once "/laragon/www/project_akhir/domain_object/node_sale.php";
+// require_once "/laragon/www/project_akhir/domain_object/node_detailSale.php";
+
+require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../domain_object/node_sale.php';
+require_once __DIR__ . '../../domain_object/node_detailSale.php';
+
+
 
 class ModelSaleSql {
     private $db;
 
     public function __construct() {
         // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
+        $this->db = Databases::getInstance();
+        // $this->initializeDefaultItems(); // Anda bisa menambahkan ini jika ingin menambahkan item default saat pertama kali  
     }
 
     public function addSale($detailSale, int $salePay, int $saleChange, int $saleTotalPrice, $saleDate, int $user_id,  $member_id) {

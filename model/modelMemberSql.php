@@ -1,18 +1,17 @@
 <?php
 
-require_once "/laragon/www/project_akhir/model/dbConnect.php";
+require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../domain_object/node_member.php';
 
-// /laragon/www/project_akhir/model/modelMember.php
-
-require_once "/laragon/www/project_akhir/domain_object/node_member.php";
 
 class modelMember {
     private $db;
 
     public function __construct() {
         // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
-        // $this->initializeDefaultMembers();
+        $this->db = Databases::getInstance();
+
+        $this->initializeDefaultMembers();
     }
 
     private function initializeDefaultMembers() {
@@ -32,7 +31,7 @@ class modelMember {
         $phone = (int)$phone;
         $point = (int)$point;
 
-        $query = "INSERT INTO members (username, password, phone, point) VALUES ('$name', '$password', '$phone', $point)";
+        $query = "INSERT INTO members (username, password,point, phone ) VALUES ('$name', '$password', $point, '$phone')";
         try {
             $this->db->execute($query);
             return true;

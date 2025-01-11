@@ -1,16 +1,19 @@
 <?php
 
-require_once "/laragon/www/project_akhir/domain_object/node_item.php";  // Jika Anda masih ingin menggunakan node
+
+require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '/../domain_object/node_item.php';
+
 
 class modelItem {
     private $db;
 
     public function __construct() {
         // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
+        $this->db = Databases::getInstance();
         $this->initializeDefaultItems(); // Anda bisa menambahkan ini jika ingin menambahkan item default saat pertama kali
 
-        // Jika ingin mengambil data item dari database, Anda bisa menggunakan metode getAllItem
+        
     }
 
     public function initializeDefaultItems() {

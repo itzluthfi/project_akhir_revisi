@@ -1,24 +1,17 @@
 <?php
+// require_once "/laragon/www/project_akhir/model/dbConnect.php";
+// require_once "/laragon/www/project_akhir/domain_object/node_role.php";
+require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../domain_object/node_role.php';
 
-require_once "/laragon/www/project_akhir/model/dbConnect.php";
-require_once "/laragon/www/project_akhir/domain_object/node_role.php";
 
 class modelRole {
     private $db;
-    private $roles = [];
+ 
 
     public function __construct() {
         // Inisialisasi koneksi database
-        $this->db = new Database('localhost', 'root', '', 'poswarkop');
-
-        if (isset($_SESSION['roles'])) {
-            // Ambil data dari sesi
-            $this->roles = unserialize($_SESSION['roles']);
-        } else {
-            // Jika sesi kosong, ambil dari database
-            $this->roles = $this->getAllRoleFromDB();
-            $_SESSION['roles'] = serialize($this->roles);
-        }
+        $this->db = Databases::getInstance();
     }
 
    
@@ -32,10 +25,7 @@ class modelRole {
         $query = "INSERT INTO roles (name, description, status, gaji) 
                   VALUES ('$role_name', '$role_description', $role_status, $role_gaji)";
         try {
-            $this->db->execute($query);
-            // Perbarui data dalam sesi
-            $this->roles = $this->getAllRoleFromDB();
-            $_SESSION['roles'] = serialize($this->roles);
+            $this->db->execute($query);           
             return true;
         } catch (Exception $e) {
             echo "<script>console.log('Error adding role: " . addslashes($e->getMessage()) . "');</script>";
@@ -43,7 +33,7 @@ class modelRole {
         }
     }
 
-    private function getAllRoleFromDB() {
+    public function getAllRoleFromDB() {
         $query = "SELECT * FROM roles";
         $result = $this->db->select($query);
 
@@ -54,11 +44,7 @@ class modelRole {
         return $roles;
     }
 
-    public function getAllRole() {
-        echo "<script>console.log('Fetching all roles');</script>";
-        return $this->roles;
-    }
-
+  
     public function getRoleById($role_id) {
         $role_id = (int)$role_id;
         $query = "SELECT * FROM roles WHERE id = $role_id";
@@ -87,9 +73,7 @@ class modelRole {
                   WHERE id = $id";
         try {
             $this->db->execute($query);
-            // Perbarui data dalam sesi
-            $this->roles = $this->getAllRoleFromDB();
-            $_SESSION['roles'] = serialize($this->roles);
+           
             return true;
         } catch (Exception $e) {
             echo "<script>console.log('Error updating role: " . addslashes($e->getMessage()) . "');</script>";
@@ -102,9 +86,7 @@ class modelRole {
         $query = "DELETE FROM roles WHERE id = $role_id";
         try {
             $this->db->execute($query);
-            // Perbarui data dalam sesi
-            $this->roles = $this->getAllRoleFromDB();
-            $_SESSION['roles'] = serialize($this->roles);
+           
             return true;
         } catch (Exception $e) {
             echo "<script>console.log('Error deleting role: " . addslashes($e->getMessage()) . "');</script>";

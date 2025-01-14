@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../config/dbConnectNew.php';
+
 require_once __DIR__ . '../../domain_object/node_member.php';
 
 
@@ -28,7 +29,7 @@ class modelMember {
         // Escape input untuk mencegah SQL Injection
         $name = mysqli_real_escape_string($this->db->conn, $name);
         $password = mysqli_real_escape_string($this->db->conn, $password);
-        $phone = (int)$phone;
+        $phone = mysqli_real_escape_string($this->db->conn, $phone);
         $point = (int)$point;
 
         $query = "INSERT INTO members (username, password,point, phone ) VALUES ('$name', '$password', $point, '$phone')";
@@ -104,9 +105,6 @@ class modelMember {
         }
     }
 
-    public function __destruct() {
-        // Menutup koneksi database
-        $this->db->close();
-    }
+  
 }
 ?>

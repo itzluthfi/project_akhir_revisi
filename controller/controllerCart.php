@@ -1,5 +1,5 @@
 <?php
-require_once "/laragon/www/project_akhir/model/modelCartSql.php";
+require_once "../model/modelCartSql.php";
 
 class ControllerCart {
     private $modelCart;
@@ -13,48 +13,69 @@ class ControllerCart {
             case 'add':
                 $member_id = $_POST['member_id'];
                 $item_id = $_POST['item_id'];
-                
                 $quantity = $_POST['quantity'];
             
-
-                if ($this->modelCart->addCartItem($member_id, $item_id,  $quantity)) {
+                $result = $this->modelCart->addCartItem($member_id, $item_id, $quantity);
+            
+                if ($result === true) {
                     $message = "Item berhasil ditambahkan ke keranjang!";
                 } else {
-                    $message = "Gagal menambahkan item ke keranjang.";
+                    $message = "Gagal menambahkan item ke keranjang. Error: $result";
                 }
                 
-                echo "<script>alert('$message'); window.location.href='/project_akhir/views/warkop_ui/index.php';</script>";
+                echo "<script>alert('$message'); window.location.href='./views/warkop_ui/index.php';</script>";
                 break;
             
-
             case 'update_quantity':
                 $cart_id = $_POST['cart_id'];
                 $quantity = $_POST['quantity'];
-
-                if ($this->modelCart->updateQuantity($cart_id, $quantity)) {
+            
+                $result = $this->modelCart->updateQuantity($cart_id, $quantity);
+            
+                if ($result === true) {
                     $message = "Item quantity updated successfully!";
                 } else {
-                    $message = "Failed to update item quantity.";
+                    $message = "Failed to update item quantity. Error: $result";
                 }
+            
+                echo "<script>alert('$message'); window.location.href='./views/cart/cart_list.php';</script>";
                 break;
-
+            
             case 'delete':
                 if (isset($_GET['id'])) {
                     $cart_id = $_GET['id'];
-                    if ($this->modelCart->removeCartItem($cart_id)) {
+                    $result = $this->modelCart->removeCartItem($cart_id);
+            
+                    if ($result === true) {
                         $message = "Item removed from cart successfully!";
                     } else {
-                        $message = "Failed to remove item from cart.";
+                        $message = "Failed to remove item from cart. Error: $result";
                     }
                 } else {
                     $message = "Item ID not provided.";
                 }
+            
+                echo "<script>alert('$message'); window.location.href='./views/cart/cart_list.php';</script>";
                 break;
 
-            // case 'checkout':
-            //     $this->modelCart->checkout();
-            //     $message = "Checkout successful! Your cart has been cleared.";
-            //     break;
+                case 'checkout':
+                    if (isset($_GET['id'])) {
+                        $cart_id = $_GET['id'];
+                        $result = $this->modelCart->deleteCartsBySaleId($cart_id);
+                
+                        if ($result === true) {
+                            $message = "Checkout successful! Your cart has been cleared.";
+                        } else {
+                            $message = "Failed to checkout. Error: $result"; 
+                        }
+                    } else {
+                        $message = "Cart ID not provided for checkout.";
+                    }
+                
+                    // Redirect dengan pesan
+                    echo "<script>alert('$message'); window.location.href='./views/warkop_ui/index.php';</script>";
+                    break;
+                
 
             default:
                 $message = "Action not recognized for cart.";
@@ -62,6 +83,6 @@ class ControllerCart {
         }
 
         // Redirect with message
-        echo "<script>alert('$message'); window.location.href='/project_akhir/views/cart/cart_list.php';</script>";
+        echo "<script>alert('$message'); window.location.href='./views/cart/cart_list.php';</script>";
     }
 }

@@ -28,7 +28,7 @@
             <!-- Formulir Input Member -->
             <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">Input Member</h2>
-                <form action="/project_akhir/response_input.php?modul=member&fitur=add" method="POST">
+                <form action="../../response_input.php?modul=member&fitur=add" method="POST">
                     <!-- Nama Member -->
                     <div class="mb-4">
                         <label for="member_name" class="block text-gray-700 text-sm font-bold mb-2">Nama :</label>

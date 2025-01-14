@@ -1,10 +1,9 @@
 <?php
 
-// require_once "/laragon/www/project_akhir/model/dbConnect.php";
-// require_once "/laragon/www/project_akhir/domain_object/node_sale.php";
-// require_once "/laragon/www/project_akhir/domain_object/node_detailSale.php";
 
-require_once __DIR__ . '/dbConnectNew.php';
+
+require_once __DIR__ . '../../config/dbConnectNew.php';
+
 require_once __DIR__ . '../../domain_object/node_sale.php';
 require_once __DIR__ . '../../domain_object/node_detailSale.php';
 
@@ -194,10 +193,25 @@ class ModelSaleSql {
         }
     }
 
-    public function __destruct() {
-        // Menutup koneksi database
-        $this->db->close();
+
+    public function updateStatus($orderId, $status) {
+        // Escape input untuk menghindari SQL Injection
+        $orderId = (int)$orderId;
+        $status = addslashes($status);
+    
+        // Query untuk memperbarui status transaksi
+        $query = "UPDATE sales_midtrans SET status = '$status' WHERE id = $orderId";
+    
+        try {
+            $this->db->execute($query);
+            return true;
+        } catch (Exception $e) {
+            echo "<script>console.log('Error updating status: " . addslashes($e->getMessage()) . "');</script>";
+            return false;
+        }
     }
+    
+
 }
 
 ?>

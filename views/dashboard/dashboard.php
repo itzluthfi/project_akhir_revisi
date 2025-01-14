@@ -1,9 +1,8 @@
 <?php 
-//require_once "/laragon/www/project_akhir/model/modelRole.php"; 
 require_once __DIR__ . '../../../init.php';
 
 require_once __DIR__ . '../../../auth_check.php';
-$obj_role = $modelRole->getAllRole(); 
+$obj_role = $modelRole->getAllRoleFromDB(); 
 $obj_member = $modelMember->getAllMembers(); 
 $obj_item = $modelItem->getAllItem(); 
 $obj_sale = $modelSale->getAllSales(); 
@@ -70,13 +69,15 @@ $sales_totals_json = json_encode($sales_totals);
 <body class="bg-gray-100 font-sans leading-normal tracking-normal overflow-hidden">
 
     <!-- Navbar -->
-    <?php include_once '/laragon/www/project_akhir/views/includes/navbar.php'; ?>
+    <?php include_once __DIR__ . '../../includes/navbar.php' ?>
+
 
     <!-- Main container -->
     <div class="flex h-screen">
         <!-- Sidebar -->
 
-        <?php include_once '/laragon/www/project_akhir/views/includes/sidebar.php'; ?>
+        <?php include_once __DIR__ . '../../includes/sidebar.php' ?>
+
 
 
 
@@ -184,8 +185,8 @@ $sales_totals_json = json_encode($sales_totals);
                     </div>
 
                     <!-- Sales Data Table -->
-                    <div class="bg-white shadow-lg rounded-lg p-6">
-                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Sales Data</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Last Activity</h2>
+                    <div class="bg-white shadow-lg rounded-lg p-6 max-h-[300px] overflow-y-auto overflow-hidden">
                         <table class="min-w-full bg-white border">
                             <thead class="border-b-2 border-gray-300 text-gray-800">
                                 <tr>
@@ -198,7 +199,7 @@ $sales_totals_json = json_encode($sales_totals);
                                     <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-gray-700">
+                            <tbody class="text-gray-700 ">
                                 <?php if (!empty($obj_sale)) {
                                 // var_dump($obj_sale);
                                 foreach ($obj_sale as $sale) { ?>
@@ -207,7 +208,7 @@ $sales_totals_json = json_encode($sales_totals);
                                         <?php echo htmlspecialchars($sale->sale_id); ?></td>
                                     <!-- <td class="w-1/4 py-3 px-4"><?php echo htmlspecialchars($sale->sale_date); ?></td> -->
                                     <td class="w-1/4 py-3 px-4">
-                                        <?php $user = $modelUser->getUserById($sale->id_user);$role = $modelRole->getRoleById($sale->id_user); echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]"); ?>
+                                        <?php $user = $modelUser->getUserById($sale->id_user); echo htmlspecialchars("{$user->user_username} - [{$user->role_name}]"); ?>
                                     </td>
                                     <td class="w-1/4 py-3 px-4">
                                         <?php $member = $modelMember->getMemberById($sale->id_member); echo htmlspecialchars($member->name); ?>
@@ -347,7 +348,7 @@ $sales_totals_json = json_encode($sales_totals);
     // function confirmDelete(saleId) {
     //     if (confirm('Apakah Anda yakin ingin menghapus role ini?')) {
     //         // Redirect ke halaman delete dengan fitur=delete
-    //         window.location.href = "/project_akhir/response_input.php?modul=sale&fitur=delete&id=" + saleId;
+    //         window.location.href = "../../response_input.php?modul=sale&fitur=delete&id=" + saleId;
     //     } else {
     //         // Batalkan penghapusan
     //         alert("gagal menghapus data");

@@ -1,5 +1,6 @@
 <?php
-require_once "/laragon/www/project_akhir/model/modelRoleSql.php";
+
+require_once "../model/modelRoleSql.php";
 
 class ControllerRole {
     private $modelRole;
@@ -77,6 +78,6 @@ class ControllerRole {
         }
 
         // Display message and redirect to the role list page
-        echo "<script>alert('$message'); window.location.href='/project_akhir/views/role/role_list.php';</script>";
+        echo "<script>alert('$message'); window.location.href='./views/role/role_list.php';</script>";
     }
 }

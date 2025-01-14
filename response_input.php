@@ -64,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
                                 setcookie('member_login', serialize($member), time() + (86400), "/"); // 86400 detik = 1 hari
                             }
 
-                            echo "<script>alert('Login berhasil'); window.location.href='/project_akhir/views/warkop_ui/index.php';</script>";
+                            echo "<script>alert('Login berhasil'); window.location.href='./index.php';</script>";
 
                             return;
                         }
                     }   
                     
-                    echo "<script>alert('Login gagal'); window.location.href='/project_akhir/views/warkop_ui/login_member.php';</script>";
+                    echo "<script>alert('Login gagal'); window.location.href='./views/warkop_ui/login_member.php';</script>";
                     break;
                 case 'ghost':
                 $username = $_POST["username_login"];
@@ -90,14 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
                         setcookie('user_login', serialize($user), time() + (86400), "/"); // 86400 detik = 1 hari
                     }
 
-                    echo "<script>alert('Login berhasil'); window.location.href='/project_akhir/views/dashboard/dashboard.php';</script>";
+                    echo "<script>alert('Login berhasil'); window.location.href='./views/dashboard/dashboard.php';</script>";
 
                         return;
                     }
                     
                     }
                 // Jika login gagal
-                 echo "<script>alert('Login gagal!'); window.location.href='/project_akhir/';</script>";
+                 echo "<script>alert('Login gagal!'); window.location.href='./index.php';</script>";
                 break;
                 }
             break;
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
                 if (isset($_COOKIE['user_login'])) {
                     setcookie('user_login', '', time() - 3600, "/");
                 }
-                echo "<script>alert('Logout berhasil!'); window.location.href='/project_akhir/';</script>";
+                echo "<script>alert('Logout berhasil!'); window.location.href='index.php';</script>";
 
                 break;
 
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
                     
                     setcookie('member_login', '', time() - 3600, "/");
                 }
-                echo "<script>alert('Logout berhasil!'); window.location.href='/project_akhir/views/warkop_ui/index.php';</script>";
+                echo "<script>alert('Logout berhasil!'); window.location.href='./index.php';</script>";
                 break;
                 }
                 echo "<script>alert('Logout gagal!fitur tak di kenal');</script>";
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
                 break;
 
         default:
-            //echo "<script>alert('Module tidak dikenal.'); window.location.href='/project_akhir/{$modul}/{$modul}_list.php';</script>";
+            //echo "<script>alert('Module tidak dikenal.'); window.location.href='views/{$modul}/{$modul}_list.php';</script>";
             break;
     }
 }

@@ -8,8 +8,8 @@ include_once "model/modelSaleSql.php";
 include_once "model/modelMemberSql.php";
 include_once "model/modelCartSql.php";
 //include_once "model/modelDetailSales.php";
+
 // initiate
-//role
 $modelRole = new modelRole();
 $modelItem = new modelItem();
 $modelUser = new modelUser();

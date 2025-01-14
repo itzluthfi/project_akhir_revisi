@@ -248,6 +248,38 @@ if($isLogin){
         color: black;
 
     }
+
+    .profile-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        /* Ukuran lingkaran */
+        height: 40px;
+        /* Ukuran lingkaran */
+        border: 2px solid #f7b80a;
+        /* Warna border */
+        border-radius: 50%;
+        /* Membuat border melingkar */
+        text-decoration: none;
+        /* Hilangkan underline */
+        color: #b6895b;
+        /* Warna ikon */
+        background-color: black;
+        /* Warna latar belakang */
+        transition: transform 0.2s ease-in-out;
+        /* Animasi hover */
+    }
+
+    .profile-button:hover {
+        transform: scale(1.1);
+        /* Membesarkan ikon saat hover */
+    }
+
+    .profile-button i {
+        width: 20px;
+        height: 20px;
+    }
     </style>
 
 </head>
@@ -277,7 +309,16 @@ if($isLogin){
 
                 <a href="#" id="hamburger-menu"><i data-feather="menu"></i>
                 </a>
-                <?=  $isLogin ? '<a id="logout-button" href="/project_akhir/response_input.php?modul=logout&fitur=member">Logout</a>' : '<a id="login-button" href="/project_akhir/views/warkop_ui/login_member.php">Login</a>' ?>
+                <?php if ($isLogin): ?>
+                <!-- profile link -->
+                <a id="my-profile-button" href="./profile.php" class="profile-button">
+                    <i data-feather="user"></i>
+                </a>
+
+                <a id="logout-button" href="../../response_input.php?modul=logout&fitur=member">Logout</a>
+                <?php else: ?>
+                <a id="login-button" href="./login_member.php">Login</a>
+                <?php endif; ?>
         </div>
         <!-- search form start -->
         <div class="search-form">
@@ -360,7 +401,7 @@ if($isLogin){
             <a href="#" class="cta">beli sekarang</a>
         </main>
     </section>
-    <?= var_dump($carts); ?>
+    <!-- <?= var_dump($carts); ?> -->
 
     <!-- hero section end -->
 
@@ -712,7 +753,7 @@ if($isLogin){
         let quantity = parseInt(quantitySpan.textContent) + delta;
         if (quantity < 1) return; // Cegah jumlah negatif atau nol
 
-        fetch(`/project_akhir/response_input.php`, {
+        fetch(`../../response_input.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -733,7 +774,7 @@ if($isLogin){
     }
 
     function removeItem(id) {
-        fetch(`/project_akhir/response_input.php`, {
+        fetch(`/response_input.php?modul=cart&fitur=delete&id=${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -752,7 +793,7 @@ if($isLogin){
     }
 
     function checkout() {
-        fetch(`/project_akhir/response_input.php`, {
+        fetch(`/response_input.php?modul=cart&fitur=checkout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

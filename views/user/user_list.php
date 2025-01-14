@@ -25,12 +25,14 @@ $obj_user = $modelUser->getAllUser();
 <body class="bg-gray-100 font-sans leading-normal tracking-normal overflow-hidden">
 
     <!-- Navbar -->
-    <?php include_once '/laragon/www/project_akhir/views/includes/navbar.php'; ?>
+    <?php include_once __DIR__ . '../../includes/navbar.php' ?>
+
 
     <!-- Main container -->
     <div class="flex">
         <!-- Sidebar -->
-        <?php include_once "/laragon/www/project_akhir/views/includes/sidebar.php"; ?>
+        <?php include_once __DIR__ . '../../includes/sidebar.php' ?>
+
 
         <!-- Main Content -->
         <div class="flex-1 p-8">
@@ -42,7 +44,7 @@ $obj_user = $modelUser->getAllUser();
                 <div class="mb-4">
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <i class="fa-solid fa-plus"></i>
-                        <a href="/project_akhir/views/user/user_input.php"> Add New User</a>
+                        <a href="../../views/user/user_input.php"> Add New User</a>
                     </button>
                 </div>
 
@@ -67,7 +69,7 @@ $obj_user = $modelUser->getAllUser();
 
 
                             <?php foreach($obj_user as $user){ 
-                                $user_role = $modelRole->getRoleById($user->id_role);
+                                $user_role = $modelRole->getRoleById($user->role_id);
                                 
                             ?>
                             <tr class="text-center">
@@ -80,7 +82,7 @@ $obj_user = $modelUser->getAllUser();
                                 <td class="w-1/6 py-3 px-4">
                                     <button
                                         class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-1 px-2 rounded mr-2">
-                                        <a href="/project_akhir/views/user/user_update.php?id=<?= $user->user_id ?>"><i
+                                        <a href="../../views/user/user_update.php?id=<?= $user->user_id ?>"><i
                                                 class="fa-regular fa-pen-to-square"></i></a>
                                     </button>
                                     <button
@@ -102,7 +104,7 @@ $obj_user = $modelUser->getAllUser();
     function confirmDelete(userId) {
         if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
             // Redirect ke halaman delete dengan fitur=delete
-            window.location.href = "/project_akhir/response_input.php?modul=user&fitur=delete&id=" + userId;
+            window.location.href = "../../response_input.php?modul=user&fitur=delete&id=" + userId;
         } else {
             // Batalkan penghapusan
             alert("Gagal menghapus data");

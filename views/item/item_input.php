@@ -29,7 +29,7 @@
             <!-- Formulir Input item -->
             <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">Input item</h2>
-                <form action="/project_akhir/response_input.php?modul=item&fitur=add" method="POST">
+                <form action="../../response_input.php?modul=item&fitur=add" method="POST">
                     <!-- Nama item -->
                     <div class="mb-4">
                         <label for="item_name" class="block text-gray-700 text-sm font-bold mb-2">Nama Item:</label>

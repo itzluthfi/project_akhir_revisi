@@ -1,15 +1,16 @@
 <?php
-include_once "/laragon/www/project_akhir/init.php";
+require_once __DIR__ . '../../../init.php';
+
 
 $user_name = unserialize($_SESSION['user_login'])->user_username;
 
-$user_role = $modelRole->getRoleById(unserialize($_SESSION['user_login'])->id_role);
+$user_role = $modelRole->getRoleById(unserialize($_SESSION['user_login'])->role_id);
 ?>
 
 <nav class="bg-blue-500 p-4 shadow-lg rounded">
     <div class="container mx-auto flex justify-between items-center">
         <div class="ml-4 text-white font-bold text-xl italic">
-            Point Of Sale
+            Warkop MJ
         </div>
         <div class="relative flex items-center text-white mr-3">
 

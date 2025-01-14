@@ -1,6 +1,6 @@
 <?php
 
-require_once "/laragon/www/project_akhir/model/modelMemberSql.php";
+require_once __DIR__ . '../../model/modelMemberSql.php';
 
 class ControllerMember {
     private $modelMember;
@@ -68,7 +68,7 @@ class ControllerMember {
         }
 
         // Redirect after action
-        echo "<script>alert('$message'); window.location.href='/project_akhir/views/member/member_list.php';</script>";
+        echo "<script>alert('$message'); window.location.href='./views/member/member_list.php';</script>";
     }
 }
 ?>

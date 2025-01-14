@@ -4,7 +4,7 @@
 
     $obj_user = $modelUser->getUserById($_GET['id']);
    
-    $obj_roles = $modelRole->getAllRole();
+    $obj_roles = $modelRole->getAllRoleFromDB();
 ?>
 
 
@@ -57,11 +57,11 @@
 
                     <!-- Role User -->
                     <div class="mb-4">
-                        <label for="id_role" class="block text-gray-700 text-sm font-bold mb-2">Role User:</label>
-                        <select id="id_role" name="id_role"
+                        <label for="role_id" class="block text-gray-700 text-sm font-bold mb-2">Role User:</label>
+                        <select id="role_id" name="role_id"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             required>
-                            <option value="<?= $obj_user->id_role ?>">Pilih Role</option>
+                            <option value="<?= $obj_user->role_id ?>">Pilih Role</option>
                             <?php foreach($obj_roles as $role) {
                                 if($role->role_status == 1) { ?>
                             <option value="<?= $role->role_id ?>"><?= $role->role_name ?></option>

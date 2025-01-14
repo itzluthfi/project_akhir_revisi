@@ -43,24 +43,28 @@
 
                 <!-- Form -->
                 <form class="mt-6 opacity-65 hover:opacity-100 transition-opacity duration-300"
-                    action="/project_akhir/response_input.php?modul=register&fitur=add" method="POST">
+                    action="../../response_input.php?modul=member&fitur=add" method="POST">
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold mb-1" for="username">Username</label>
-                        <input id="username" type="text" name="username" placeholder="Enter your Username" required
+                        <label class="block text-sm font-semibold mb-1" for="member_name">Username</label>
+                        <input id="member_name" type="text" name="member_name" placeholder="Enter your member_name"
+                            required
                             class="block w-full border border-gray-300 rounded-md focus:border-purple-700 focus:ring-1 focus:ring-purple-700 py-2 px-3 text-gray-700 transition duration-200" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold mb-1" for="email">Email</label>
-                        <input id="email" type="email" name="email" placeholder="Enter your Email" required
+                        <label class="block text-sm font-semibold mb-1" for="member_password">Password</label>
+                        <input id="member_password" type="password" name="member_password" placeholder="*****" required
+                            class="block w-full border border-gray-300 rounded-md focus:border-purple-700 focus:ring-1 focus:ring-purple-700 py-2 px-3 text-gray-700 transition duration-200" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1" for="member_phone">No Telp</label>
+                        <input id="member_phone" type="number" name="member_phone" placeholder="Enter your phone number"
+                            required
                             class="block w-full border border-gray-300 rounded-md focus:border-purple-700 focus:ring-1 focus:ring-purple-700 py-2 px-3 text-gray-700 transition duration-200" />
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold mb-1" for="password">Password</label>
-                        <input id="password" type="password" name="password" placeholder="*****" required
-                            class="block w-full border border-gray-300 rounded-md focus:border-purple-700 focus:ring-1 focus:ring-purple-700 py-2 px-3 text-gray-700 transition duration-200" />
-                    </div>
+                    <input type="hidden" name="member_point" value="0">
+
 
                     <button type="submit"
                         class="register-button w-full text-center text-white transition duration-200 px-4 py-2 rounded-md"

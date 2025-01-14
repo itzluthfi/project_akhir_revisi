@@ -1,7 +1,8 @@
 <?php
 
 
-require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../config/dbConnectNew.php';
+
 require_once __DIR__ . '/../domain_object/node_item.php';
 
 
@@ -30,19 +31,17 @@ class modelItem {
     }
 
     public function addItem($item_name, $item_price, $item_stock, $item_star) {
-        // Escape input untuk mencegah SQL Injection
         $item_name = mysqli_real_escape_string($this->db->conn, $item_name);
         $item_price = (int)$item_price;
         $item_stock = (int)$item_stock;
         $item_star = (int)$item_star;
-
+    
         $query = "INSERT INTO items (name, price, stock, star) VALUES ('$item_name', $item_price, $item_stock, $item_star)";
         try {
             $this->db->execute($query);
             return true;
         } catch (Exception $e) {
-            echo "<script>console.log('Error adding item: " . $e->getMessage() . "');</script>";
-            return false;
+            return $e->getMessage(); // Mengembalikan pesan error
         }
     }
 
@@ -84,16 +83,13 @@ class modelItem {
         $item_price = (int)$item_price;
         $item_stock = (int)$item_stock;
         $item_star = (int)$item_star;
-
+    
         $query = "UPDATE items SET name = '$item_name', price = $item_price, stock = $item_stock, star = $item_star WHERE id = $id";
         try {
             $this->db->execute($query);
-            // Debugging message
-            echo "<script>console.log('Updated item with ID: $id');</script>";
             return true;
         } catch (Exception $e) {
-            echo "<script>console.log('Error updating item: " . $e->getMessage() . "');</script>";
-            return false;
+            return $e->getMessage(); // Mengembalikan pesan error
         }
     }
 
@@ -102,18 +98,12 @@ class modelItem {
         $query = "DELETE FROM items WHERE id = $id";
         try {
             $this->db->execute($query);
-            // Debugging message
-            echo "<script>console.log('Deleted item with ID: $id');</script>";
             return true;
         } catch (Exception $e) {
-            echo "<script>console.log('Error deleting item: " . $e->getMessage() . "');</script>";
-            return false;
+            return $e->getMessage(); // Mengembalikan pesan error
         }
     }
 
-    public function __destruct() {
-        // Menutup koneksi database
-        $this->db->close();
-    }
+ 
 }
 ?>

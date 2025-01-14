@@ -1,8 +1,8 @@
 <?php
-require_once "/laragon/www/project_akhir/domain_object/node_item.php";
+require_once __DIR__ . '/node_item.php';
 class DetailSale extends Item{
     public $id_sale;
-    public $item_qty;
+    public $item_qty; 
     public $subtotal;
 
     public function __construct( $id_sale, $item_id , $item_name,  $item_price,  $item_qty) {

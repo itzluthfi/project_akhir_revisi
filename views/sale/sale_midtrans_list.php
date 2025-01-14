@@ -10,7 +10,7 @@ $sales = $modelSale->getAllSalesMidtrans();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar sale</title>
+    <title>Daftar sale By Midtrans</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -27,7 +27,7 @@ $sales = $modelSale->getAllSalesMidtrans();
     function confirmDelete(saleId) {
         if (confirm('Apakah Anda yakin ingin menghapus role ini?')) {
             // Redirect ke halaman delete dengan fitur=delete
-            window.location.href = "/project_akhir/response_input.php?modul=sale&fitur=delete&id=" + saleId;
+            window.location.href = "../../response_input.php?modul=sale&fitur=delete&id=" + saleId;
         } else {
             // Batalkan penghapusan
             alert("gagal menghapus data");
@@ -50,23 +50,27 @@ $sales = $modelSale->getAllSalesMidtrans();
         <!-- Main Content -->
         <div class="flex-1 p-8 overflow-y-auto h-[calc(100vh-4rem)]">
 
-            <h1 class="text-4xl font-bold mb-5 pb-2 text-gray-800 italic">Manage Sales</h1>
+            <h1 class="text-4xl font-bold mb-5 pb-2 text-gray-800 italic">Manage Sales By Midtrans</h1>
 
 
             <!-- Main Container for Transactions -->
             <div class="container mx-auto">
                 <input id="search-input" type="text" name="query" placeholder="Search By Name Or Id"
                     class="p-2 border border-gray-300 rounded-xl w-Search-Input " style="width: 26rem;" />
+                <!-- Print PDF Button -->
+                <button onclick="printSales()"
+                    class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fa fa-print"></i> Cetak All Sale - [ PDF ]
+                </button>
                 <!-- sale Table -->
                 <div class="bg-white shadow-md  my-6">
                     <table class="min-w-full bg-white table-auto mt-4 rounded-lg overflow-hidden shadow-md">
                         <thead class="bg-gray-800 text-white">
                             <tr>
                                 <th class="w-1/12 py-3 px-4 uppercase font-semibold text-sm">ID sale</th>
-                                <!-- <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">User</th> -->
                                 <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">Member</th>
                                 <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">Total Harga</th>
-                                <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">Status</th>
+                                <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Status</th>
                                 <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                             </tr>
                         </thead>
@@ -77,17 +81,16 @@ $sales = $modelSale->getAllSalesMidtrans();
                             <tr class="text-center">
                                 <td class="py-3 px-4 text-blue-600">
                                     <?php echo htmlspecialchars($sale->sale_id); ?></td>
-                                <!-- <td class="w-1/4 py-3 px-4"><?php echo htmlspecialchars($sale->sale_date); ?></td> -->
-                                <!-- <td class="w-1/4 py-3 px-4">
-                                    <?php $user = $modelUser->getUserById($sale->id_user);$role = $modelRole->getRoleById($user->id_role); echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]"); ?>
-                                </td> -->
+
                                 <td class="w-1/4 py-3 px-4">
                                     <?php $member = $modelMember->getMemberById($sale->id_member); echo htmlspecialchars($member->name); ?>
                                 </td>
                                 <td class="w-1/4 py-3 px-4"><?php echo htmlspecialchars($sale->sale_totalPrice); ?></td>
-                                <td class="w-1/4 py-3 px-4"><?php echo htmlspecialchars($sale->sale_status); ?></td>
-                                <!-- <td class="w-1/6 py-3 px-4"><?php echo htmlspecialchars($sale->sale_pay); ?></td>
-                                <td class="w-1/6 py-3 px-4"><?php echo htmlspecialchars($sale->sale_change); ?></td> -->
+                                <td class="w-1/6 py-3 px-4"> <span
+                                        class="<?= $sale->sale_status == "pending" ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600' ?> 
+    inline-flex items-center justify-center px-4 py-1 rounded-full text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105">
+                                        <?= $sale->sale_status == "pending" ? "Pending" : "Settlement" ?>
+                                    </span></td>
                                 <td class="w-1/6 py-3 px-4">
                                     <div class="flex items-center space-x-4">
                                         <button onclick="openModal('modal-<?php echo $sale->sale_id; ?>')" class="group relative inline-flex h-10 w-10 items-center justify-center
@@ -106,17 +109,16 @@ $sales = $modelSale->getAllSalesMidtrans();
                                                 </svg>
                                             </div>
                                         </button>
-
+                                        <!-- Print PDF Button -->
+                                        <button onclick="printSales()"
+                                            class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded">
+                                            <i class="fa fa-print pr-1"></i>Cetak PDF
+                                        </button>
                                         <!-- <button
-                                            class="border-2 border-gray-700 bg-white hover:bg-gray-800 hover:text-white text-gray-800 font-bold py-1 px-2 rounded"
-                                            onclick="openModal('modal-<?php echo $sale->sale_id; ?>')">
-                                            Details
-                                        </button> -->
-                                        <button
                                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2"
                                             onclick="return confirmDelete(<?= $sale->sale_id ?>)">
                                             <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                        </button> -->
                                     </div>
 
                                 </td>
@@ -139,24 +141,20 @@ $sales = $modelSale->getAllSalesMidtrans();
             <div class="flex justify-between items-center mb-5">
                 <h3 class="text-2xl font-semibold text-gray-900">Detail Penjualan
                     #<?php echo htmlspecialchars($sale->sale_id); ?></h3>
+                <!-- Print PDF Button -->
+                <button onclick="printSales()"
+                    class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fa fa-print"></i> Cetak PDF
+                </button>
                 <button class="text-gray-500 hover:text-gray-700"
                     onclick="closeModal('modal-<?php echo $sale->sale_id; ?>')">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
             <div class="space-y-4">
-                <!-- Informasi Sales -->
-                <!-- <div class="flex justify-between">
-                    <div class="font-semibold text-gray-700">User</div>
-                    <div><?php 
-                        $user = $modelUser->getUserById($sale->id_user);
-                        $role = $modelRole->getRoleById($user->id_role);
-                        echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]");
-                    ?></div>
-                </div> -->
 
                 <div class="flex justify-between">
-                    <div class="font-semibold text-gray-700">Member</div>
+                    <div class="font-semibold text-gray-700">Member :</div>
                     <div><?php
                         $member = $modelMember->getMemberById($sale->id_member); 
                         echo htmlspecialchars($member->name);
@@ -164,25 +162,25 @@ $sales = $modelSale->getAllSalesMidtrans();
                 </div>
 
                 <div class="flex justify-between">
-                    <div class="font-semibold text-gray-700">Total Harga</div>
+                    <div class="font-semibold text-gray-700">Total Harga :</div>
                     <div><?php echo htmlspecialchars($sale->sale_totalPrice); ?></div>
                 </div>
 
                 <div class="flex justify-between">
-                    <div class="font-semibold text-gray-700">Dibayar</div>
-                    <div><?php echo htmlspecialchars($sale->sale_pay); ?></div>
+                    <div class="font-semibold text-gray-700">Status :</div>
+                    <!-- <div><?php echo htmlspecialchars($sale->sale_status); ?></div> -->
+                    <span
+                        class="<?= $sale->sale_status == "pending" ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600' ?> 
+    inline-flex items-center justify-center px-4 py-1 rounded-full text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105">
+                        <?= $sale->sale_status == "pending" ? "Pending" : "Settlement" ?>
+                    </span>
                 </div>
 
-                <div class="flex justify-between">
-                    <div class="font-semibold text-gray-700">Kembalian</div>
-                    <div><?php echo htmlspecialchars($sale->sale_change); ?></div>
-                </div>
-
-                <!-- Table Detail Barang -->
+                <!-- Table Detail Item -->
                 <div class="mt-6">
-                    <h4 class="text-lg font-semibold text-gray-800">Detail Barang</h4>
+                    <h4 class="text-lg font-semibold text-gray-800">Detail Item :</h4>
                     <table class="min-w-full bg-white table-auto mt-4 rounded-lg overflow-hidden shadow-md">
-                        <thead class="bg-[#b6895b] text-white">
+                        <thead class="bg-gray-800    text-white">
                             <tr>
                                 <th class="py-3 px-4 text-left">ID</th>
                                 <th class="py-3 px-4 text-left">Nama</th>
@@ -214,11 +212,13 @@ $sales = $modelSale->getAllSalesMidtrans();
 
             <!-- Close Button -->
             <div class="mt-6 text-center">
-                <button class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-200"
+                <button class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-400"
                     onclick="closeModal('modal-<?php echo $sale->sale_id; ?>')">
                     Close
                 </button>
+
             </div>
+
         </div>
     </div>
     <?php } } ?>
@@ -230,7 +230,7 @@ $sales = $modelSale->getAllSalesMidtrans();
     function deleteSale(saleId) {
         if (confirm('Apakah Anda yakin ingin menghapus penjualan ini?')) {
             // Redirect to delete page with fitur=delete
-            window.location.href = `/project_akhir/response_input.php?modul=sale&fitur=delete&id=${saleId}`;
+            window.location.href = `../../response_input.php?modul=sale&fitur=delete&id=${saleId}`;
         } else {
             alert("Penghapusan data dibatalkan");
         }

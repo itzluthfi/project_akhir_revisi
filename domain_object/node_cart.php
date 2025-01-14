@@ -1,6 +1,5 @@
 <?php
-require_once "/laragon/www/project_akhir/domain_object/node_item.php";
-
+require_once __DIR__ . '/node_item.php';
 class Cart extends Item {
     public $id;
     public $member_id;

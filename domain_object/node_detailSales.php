@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 
 class DetailSales {
     public $id;
@@ -13,4 +13,4 @@ class DetailSales {
         $this->quantity = $quantity;
     }
 }
-?>
+?> -->

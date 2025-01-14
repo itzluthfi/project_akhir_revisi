@@ -1,9 +1,9 @@
 <?php
 
-// require_once "/laragon/www/project_akhir/domain_object/node_user.php";  // Jika Anda masih ingin menggunakan node
-// include_once "/laragon/www/project_akhir/model/dbConnect.php";
 
-require_once __DIR__ . '/dbConnectNew.php';
+
+require_once __DIR__ . '../../config/dbConnectNew.php';
+
 require_once __DIR__ . '../../domain_object/node_user.php';
 
 
@@ -45,18 +45,34 @@ class modelUser {
         }
     }
 
+    
+    private function getRoleById($role_id) {
+        $role_id = (int)$role_id;
+        $query = "SELECT * FROM roles WHERE id = $role_id";
+        $result = $this->db->select($query);
+
+        if (count($result) > 0) {
+            $row = $result[0];
+            $role = new Role($row['id'], $row['name'], $row['description'], $row['status'], $row['gaji']);
+            echo "<script>console.log('Role fetched successfully: " . addslashes(json_encode($role)) . "');</script>";
+            return $role;
+        }
+
+        echo "<script>console.log('Role with ID $role_id not found.');</script>";
+        return null;
+    }
+
     public function getAllUser() {
         $query = "SELECT * FROM users";
         $result = $this->db->select($query);
-        
+        $role = $this->getRoleById($result[0]['role_id']);
         $users = [];
         foreach ($result as $row) {
             // Membuat objek User dan menyimpannya ke array
-            $users[] = new User($row['id'], $row['username'], $row['password'], $row['role_id']);
+            $users[] = new User($row['id'], $row['username'], $row['password'], $row['role_id'], $role->role_name, $role->role_description, $role->role_status, $role->role_gaji);
         }
 
-        // Simpan semua user ke dalam sesi
-        $_SESSION['users'] = $users;
+       
         
         return $users;
     }
@@ -64,13 +80,14 @@ class modelUser {
     public function getUserById($id) {
         $query = "SELECT * FROM users WHERE id = $id";
         $result = $this->db->select($query);
+        $role = $this->getRoleById($result[0]['role_id']);
         
+
         if (count($result) > 0) {
             $row = $result[0];
-            $user = new User($row['id'], $row['username'], $row['password'], $row['role_id']);
+            $user = new User($row['id'], $row['username'], $row['password'], $row['role_id'], $role->role_name, $role->role_description, $role->role_status, $role->role_gaji);
             
-            // Simpan ke sesi
-            $_SESSION['user'] = $user;
+
 
             return $user;
         }

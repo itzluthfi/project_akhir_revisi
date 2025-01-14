@@ -27,12 +27,12 @@
 <body class="bg-gray-100 font-sans leading-normal tracking-normal overflow-hidden">
 
     <!-- Navbar -->
-    <?php include_once '/laragon/www/project_akhir/views/includes/navbar.php'; ?>
+    <?php include_once '../includes/navbar.php'; ?>
 
     <!-- Main container -->
     <div class="flex">
         <!-- Sidebar -->
-        <?php include_once "/laragon/www/project_akhir/views/includes/sidebar.php"; ?>
+        <?php include_once "../includes/sidebar.php"; ?>
 
 
         <!-- Main Content -->
@@ -47,7 +47,7 @@
                 <div class="mb-4">
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <i class="fa-solid fa-plus"></i>
-                        <a href="/project_akhir/views/role/role_input.php"> Add New Role</a>
+                        <a href="./role_input.php"> Add New Role</a>
                     </button>
                 </div>
                 <input id="search-input" type="text" name="query" placeholder="Search By Name Or Id"
@@ -82,17 +82,12 @@
     inline-flex items-center justify-center px-4 py-1 rounded-full text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105">
                                         <?= $role->role_status ? "Active" : "Non Active" ?>
                                     </span>
-
                                 </td>
-
-
-
-
                                 <td class="w-1/6 py-3 px-4">RP. <?= number_format($role->role_gaji )?></td>
                                 <td class="w-1/6 py-3 px-4">
                                     <button
                                         class="bg-violet-500 hover:bg-violet-700 text-white font-bold py-1 px-2 rounded mr-2">
-                                        <a href="/project_akhir/views/role/role_update.php?id=<?= $role->role_id?>"><i
+                                        <a href="./role_update.php?id=<?= $role->role_id?>"><i
                                                 class="fa-regular fa-pen-to-square"></i></a>
                                     </button>
                                     <button
@@ -115,7 +110,7 @@
     function confirmDelete(roleId) {
         if (confirm('Apakah Anda yakin ingin menghapus role ini?')) {
             // Redirect ke halaman delete dengan fitur=delete
-            window.location.href = "/project_akhir/response_input.php?modul=role&fitur=delete&id=" + roleId;
+            window.location.href = "../../response_input.php?modul=role&fitur=delete&id=" + roleId;
         } else {
             // Batalkan penghapusan
             alert("gagal menghapus data");

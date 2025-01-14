@@ -1,5 +1,5 @@
 <?php
-require_once "/laragon/www/project_akhir/model/modelUserSql.php";
+require_once __DIR__ . '../../model/modelUserSql.php';
 
 class ControllerUser {
     private $modelUser;
@@ -13,12 +13,12 @@ class ControllerUser {
 
         switch ($action) {
             case 'add':
-                if (isset($_POST['user_username'], $_POST['user_password'], $_POST['id_role'])) {
+                if (isset($_POST['user_username'], $_POST['user_password'], $_POST['role_id'])) {
                     $user_username = trim($_POST['user_username']);
                     $user_password = trim($_POST['user_password']);
-                    $id_role = intval($_POST['id_role']);
+                    $role_id = intval($_POST['role_id']);
 
-                    if ($this->modelUser->addUser($user_username, $user_password, $id_role)) {
+                    if ($this->modelUser->addUser($user_username, $user_password, $role_id)) {
                         $message = "User added successfully!";
                     } else {
                         $message = "Failed to add user.";
@@ -29,13 +29,13 @@ class ControllerUser {
                 break;
 
             case 'update':
-                if (isset($_GET['id'], $_POST['user_username'], $_POST['user_password'], $_POST['id_role'])) {
+                if (isset($_GET['id'], $_POST['user_username'], $_POST['user_password'], $_POST['role_id'])) {
                     $user_id = intval($_GET['id']);
                     $user_username = trim($_POST['user_username']);
                     $user_password = trim($_POST['user_password']);
-                    $id_role = intval($_POST['id_role']);
+                    $role_id = intval($_POST['role_id']);
 
-                    if ($this->modelUser->updateUser($user_id, $user_username, $user_password, $id_role)) {
+                    if ($this->modelUser->updateUser($user_id, $user_username, $user_password, $role_id)) {
                         $message = "User updated successfully!";
                     } else {
                         $message = "Failed to update user.";
@@ -65,6 +65,6 @@ class ControllerUser {
         }
 
         // Redirect setelah aksi dilakukan
-        echo "<script>alert('$message'); window.location.href='/project_akhir/views/user/user_list.php';</script>";
+        echo "<script>alert('$message'); window.location.href='./views/user/user_list.php';</script>";
     }
 }

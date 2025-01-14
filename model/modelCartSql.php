@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../config/dbConnectNew.php';
 require_once __DIR__ . '../../domain_object/node_cart.php';
 
 class modelCart {
@@ -10,15 +10,8 @@ class modelCart {
     public function __construct() {
         // Gunakan koneksi database global
         $this->db = Databases::getInstance();
-
-        if (isset($_SESSION['carts'])) {
-            // Ambil data dari sesi
-            $this->carts = unserialize($_SESSION['carts']);
-        } else {
-            // Jika sesi kosong, ambil dari database
-            $this->carts = $this->getAllCartItemsFromDB();
-            $_SESSION['carts'] = serialize($this->carts);
-        }
+        // Ambil data dari database
+        $this->carts = $this->getAllCartItemsFromDB();
     }
 
     public function addCartItem($member_id, $item_id, $quantity) {
@@ -33,13 +26,11 @@ class modelCart {
             $query = "INSERT INTO carts (member_id, item_id, quantity) VALUES ('$member_id', '$item_id', '$quantity')";
             try {
                 $this->db->execute($query);
-                // Perbarui data dalam sesi
+                // Perbarui data dari database
                 $this->carts = $this->getAllCartItemsFromDB();
-                $_SESSION['carts'] = serialize($this->carts);
                 return true;
             } catch (Exception $e) {
-                echo "<script>console.log('Error adding cart item: " . addslashes($e->getMessage()) . "');</script>";
-                return false;
+                return $e->getMessage();
             }
         }
     }
@@ -112,18 +103,15 @@ class modelCart {
         $query = "UPDATE carts SET quantity = $new_quantity WHERE id = $cartId";
         try {
             $this->db->execute($query);
-            // Perbarui data dalam sesi
+            // Perbarui data dari database
             $this->carts = $this->getAllCartItemsFromDB();
-            $_SESSION['carts'] = serialize($this->carts);
             return true;
         } catch (Exception $e) {
-            echo "<script>console.log('Error updating quantity: " . addslashes($e->getMessage()) . "');</script>";
-            return false;
+            return $e->getMessage();
         }
     }
 
     public function getAllCartItems() {
-        echo "<script>console.log('Fetching all cart items');</script>";
         return $this->carts;
     }
 
@@ -131,20 +119,27 @@ class modelCart {
         $query = "DELETE FROM carts WHERE id = $id";
         try {
             $this->db->execute($query);
-            // Perbarui data dalam sesi
+            // Perbarui data dari database
             $this->carts = $this->getAllCartItemsFromDB();
-            $_SESSION['carts'] = serialize($this->carts);
             return true;
         } catch (Exception $e) {
-            echo "<script>console.log('Error removing cart item: " . addslashes($e->getMessage()) . "');</script>";
-            return false;
+            return $e->getMessage();
         }
     }
 
-    public function __destruct() {
-        // Menutup koneksi database
-        $this->db->close();
+    public function deleteCartsBySaleId($sale_id) {
+        $query = "DELETE FROM carts WHERE sale_id = $sale_id";
+        try {
+            $this->db->execute($query);
+            // Perbarui data dari database
+            $this->carts = $this->getAllCartItemsFromDB();
+            return true;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
+
+
 }
 
 ?>

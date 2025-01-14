@@ -1,6 +1,6 @@
 <?php
 
-require_once "/laragon/www/project_akhir/model/modelSaleSql.php";
+require_once __DIR__ . '../../model/modelSaleSql.php';
 
 class ControllerSale {
     private $modelSale;
@@ -48,7 +48,7 @@ class ControllerSale {
                     $isSuccess = $this->modelSale->addSale($itemsData, $sale_pay, $sale_change, $sale_totalPrice, $sale_date, $id_user, $id_member);
             
                     if ($isSuccess) {
-                        echo "<script>alert('Penjualan berhasil ditambahkan!'); window.location.href='/project_akhir/views/sale/sale_list.php';</script>";
+                        echo "<script>alert('Penjualan berhasil ditambahkan!'); window.location.href='./views/sale/sale_list.php';</script>";
                     } else {
                         echo "<script>alert('Gagal menambahkan penjualan!'); window.history.back();</script>";
                     }
@@ -63,9 +63,9 @@ class ControllerSale {
                 if (isset($_GET['id'])) {
                     $saleId = intval($_GET['id']);
                     if ($this->modelSale->deleteSale($saleId)) {
-                        echo "<script>alert('Penjualan berhasil dihapus!'); window.location.href='/project_akhir/views/sale/sale_list.php';</script>";
+                        echo "<script>alert('Penjualan berhasil dihapus!'); window.location.href='./views/sale/sale_list.php';</script>";
                     } else {
-                        echo "<script>alert('Gagal menghapus penjualan!'); window.location.href='/project_akhir/views/sale/sale_list.php';</script>";
+                        echo "<script>alert('Gagal menghapus penjualan!'); window.location.href='./views/sale/sale_list.php';</script>";
                     }
                 } else {
                     echo "<script>alert('ID penjualan tidak ditemukan!'); window.history.back();</script>";
@@ -73,7 +73,7 @@ class ControllerSale {
                 break;
 
             default:
-                echo "<script>alert('Aksi tidak dikenal!'); window.location.href='/project_akhir/views/sale/sale_list.php';</script>";
+                echo "<script>alert('Aksi tidak dikenal!'); window.location.href='./views/sale/sale_list.php';</script>";
                 break;
         }
     }

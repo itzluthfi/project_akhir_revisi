@@ -74,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <!-- Formulir Checkout -->
-            <!-- Formulir Checkout -->
             <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 sticky top-0">
                 <h2 class="text-2xl font-bold text-gray-800">Selesaikan Pesanan Anda</h2>
                 <form class="mt-8" id="checkout-form" method="POST">
@@ -106,7 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="flex gap-4 max-md:flex-col mt-8">
                         <button type="button"
-                            class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 max-md:order-1">Batal</button>
+                            class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 max-md:order-1"
+                            onclick="window.history.back()">Batal</button>
                         <button type="button" id="pay-button"
                             class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">Selesaikan
                             Pembelian</button>
@@ -143,7 +143,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             const token = await response.text();
             console.log(token);
-            snap.pay(token);
+            snap.pay(token, {
+                onSuccess: function(result) {
+                    console.log('Pembayaran berhasil:', result);
+
+                    fetch('updateStatusMidtrans.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                orderId: result
+                                    .order_id,
+                                status: 'settlement',
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Status berhasil diperbarui di database:', data
+                                    .message);
+                                // Redirect ke halaman transaksi list
+                                window.location.href = 'profile.php';
+                            } else {
+                                console.error('Gagal memperbarui status:', data.message);
+                                alert('Terjadi kesalahan saat memperbarui status: ' + data
+                                    .message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error saat memperbarui status:', error);
+                            alert('Terjadi kesalahan pada server: ' + error.message);
+                        });
+                },
+                onPending: function(result) {
+                    console.log('Menunggu pembayaran:', result);
+                    alert('Transaksi Anda sedang menunggu pembayaran.');
+                },
+                onError: function(result) {
+                    console.error('Pembayaran gagal:', result);
+                    alert('Terjadi kesalahan pada pembayaran: ' + result.message);
+                },
+                onClose: function() {
+                    console.log('Pembayaran ditutup oleh pengguna.');
+                    alert('Anda menutup pembayaran sebelum menyelesaikannya.');
+                }
+            });
+
+
         } catch (error) {
             alert('Kesalahan terjadi: ' + error.message);
         }

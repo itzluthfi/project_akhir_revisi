@@ -1,5 +1,5 @@
 <?php
-require_once "/laragon/www/project_akhir/model/modelItemSql.php";
+require_once __DIR__ . '../../model/modelItemSql.php';
 
 class ControllerItem {
     private $modelItem;
@@ -11,64 +11,72 @@ class ControllerItem {
     public function handleAction($action) {
         switch ($action) {
             case 'add':
-                $item_name = $_POST['item_name'];
-                $item_price = $_POST['item_price'];
-                $item_stock = $_POST['item_stock'];
-                $item_star = $_POST['item_star'];
-                if($this->modelItem->addItem($item_name, $item_price, $item_stock,$item_star)){
+                $item_name = $_POST['item_name'] ?? null;
+                $item_price = $_POST['item_price'] ?? null;
+                $item_stock = $_POST['item_stock'] ?? null;
+                $item_star = $_POST['item_star'] ?? null;
 
-                    $message = "Item added successfully!";
-                }else{
-                    $message = "Failed to Add item22.";
-
+                if (!$item_name || !$item_price || !$item_stock || !$item_star) {
+                    $message = "All fields are required to add an item.";
+                } else {
+                    $result = $this->modelItem->addItem($item_name, $item_price, $item_stock, $item_star);
+                    $message = $result === true
+                        ? "Item successfully added!"
+                        : "Failed to add item. Error: $result";
                 }
+
+                echo "<script>alert('$message'); window.location.href='./views/item/item_list.php';</script>";
                 break;
 
             case 'update':
-                $item_id = $_POST['item_id'];
-                $item_name = $_POST['item_name'];
-                $item_price = $_POST['item_price'];
-                $item_stock = $_POST['item_stock'];
-                $item_star = $_POST['item_star'];
-                if ($this->modelItem->updateItem($item_id, $item_name,$item_price, $item_stock,$item_star)) {
-                    $message = "Item updated successfully!";
+                $item_id = $_POST['item_id'] ?? null;
+                $item_name = $_POST['item_name'] ?? null;
+                $item_price = $_POST['item_price'] ?? null;
+                $item_stock = $_POST['item_stock'] ?? null;
+                $item_star = $_POST['item_star'] ?? null;
+
+                if (!$item_id || !$item_name || !$item_price || !$item_stock || !$item_star) {
+                    $message = "All fields are required to update an item.";
                 } else {
-                    $message = "Failed to update item.";
+                    $result = $this->modelItem->updateItem($item_id, $item_name, $item_price, $item_stock, $item_star);
+                    $message = $result === true
+                        ? "Item successfully updated!"
+                        : "Failed to update item. Error: $result";
                 }
+
+                echo "<script>alert('$message'); window.location.href='./views/item/item_list.php';</script>";
                 break;
 
             case 'delete':
-                if (isset($_GET['id'])) {
-                    $id = $_GET['id'];
-                    if ($this->modelItem->deleteItem($id)) {
-                        $message = "Item deleted successfully!";
-                    } else {
-                        $message = "Failed to delete item." . $id;
-                    }
+                $item_id = $_GET['id'] ?? null;
+
+                if (!$item_id) {
+                    $message = "Item ID not provided for deletion.";
                 } else {
-                    $message = "Item ID not provided.";
+                    $result = $this->modelItem->deleteItem($item_id);
+                    $message = $result === true
+                        ? "Item successfully deleted!"
+                        : "Failed to delete item. Error: $result";
+                }
+
+                echo "<script>alert('$message'); window.location.href='./views/item/item_list.php';</script>";
+                break;
+
+            case 'getItemById':
+                $item_id = $_GET['id'] ?? null;
+
+                if (!$item_id) {
+                    echo json_encode(['error' => 'Item ID not provided']);
+                } else {
+                    $item = $this->modelItem->getItemById($item_id);
+                    echo $item ? json_encode($item) : json_encode(['error' => 'Item not found']);
                 }
                 break;
 
-                case 'getItemById':
-                    if (isset($_GET['id'])) {
-                        $item = $this->modelItem->getItemById($_GET['id']);
-                        if ($item) {
-                            echo json_encode($item);  // Kembalikan item dalam format JSON
-                        } else {
-                            echo json_encode(['error' => 'Item not found']);
-                        }
-                    } else {
-                        echo json_encode(['error' => 'Item ID not provided']);
-                    }
-                    break;
-
             default:
                 $message = "Action not recognized for item.";
+                echo "<script>alert('$message'); window.location.href='./views/item/item_list.php';</script>";
                 break;
         }
-
-        // Redirect after action
-        echo "<script>alert('$message'); window.location.href='/project_akhir/views/item/item_list.php';</script>";
     }
 }

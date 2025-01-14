@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__ . '../../domain_object/node_detailSales.php';
-require_once __DIR__ . '/dbConnectNew.php';
+require_once __DIR__ . '../../config/dbConnectNew.php';
+
 
 class modelDetailSale {
     private $db;

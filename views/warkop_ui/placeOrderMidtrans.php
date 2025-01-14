@@ -29,7 +29,8 @@ $detailSale = $data["cart_data"];
 $status = "pending";
 
 
-include_once "../../model/modelSaleSql.php";
+
+require_once __DIR__ . '../../../model/modelSaleSql.php';
 
 $modelSale = new modelSaleSql();
 

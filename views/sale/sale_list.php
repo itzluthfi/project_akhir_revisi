@@ -3,6 +3,22 @@ require_once __DIR__ . '../../../init.php';
 
 require_once __DIR__ . '../../../auth_check.php';
 $sales = $modelSale->getAllSales();
+
+$salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMember) {
+    $user = $modelUser->getUserById($sale->id_user);
+    $role = $modelRole->getRoleById($user->role_id);
+    $member = $modelMember->getMemberById($sale->id_member);
+
+    return [
+        'sale_id' => $sale->sale_id,
+        'sale_totalPrice' => $sale->sale_totalPrice,
+        'sale_pay' => $sale->sale_pay,
+        'sale_change' => $sale->sale_change,
+        'user_username' => $user->user_username,
+        'role_name' => $role->role_name,
+        'member_name' => $member->name,
+    ];
+}, $sales);
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +44,7 @@ $sales = $modelSale->getAllSales();
     function confirmDelete(saleId) {
         if (confirm('Apakah Anda yakin ingin menghapus role ini?')) {
             // Redirect ke halaman delete dengan fitur=delete
-            window.location.href = "/project_akhir/response_input.php?modul=sale&fitur=delete&id=" + saleId;
+            window.location.href = "../../response_input.php?modul=sale&fitur=delete&id=" + saleId;
         } else {
             // Batalkan penghapusan
             alert("gagal menghapus data");
@@ -56,39 +72,48 @@ $sales = $modelSale->getAllSales();
 
             <!-- Main Container for Transactions -->
             <div class="container mx-auto">
-                <input id="search-input" type="text" name="query" placeholder="Search By Name Or Id"
-                    class="p-2 border border-gray-300 rounded-xl w-Search-Input " style="width: 26rem;" />
+                <div class="flex items-center mb-4">
+                    <!-- Search Input -->
+                    <input id="search-input" type="text" name="query" placeholder="Search By Name Or ID"
+                        class="p-2 border border-gray-300 rounded-xl w-Search-Input" style="width: 26rem;" />
+
+                    <!-- Print PDF Button -->
+                    <button onclick="printSales()"
+                        class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fa fa-print"></i> Cetak All Sale - [ PDF ]
+                    </button>
+                </div>
+
                 <!-- sale Table -->
                 <div class="bg-white shadow-md  my-6">
                     <table class="min-w-full bg-white table-auto mt-4 rounded-lg overflow-hidden shadow-md">
                         <thead class="bg-gray-800 text-white">
                             <tr>
                                 <th class="w-1/12 py-3 px-4 uppercase font-semibold text-sm">ID sale</th>
-                                <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">User</th>
-                                <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">Member</th>
-                                <th class="w-1/4 py-3 px-4 uppercase font-semibold text-sm">Total Harga</th>
-                                <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Dibayar</th>
-                                <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Kembalian</th>
+                                <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">User</th>
+                                <th class="w-1/12 py-3 px-4 uppercase font-semibold text-sm">Member</th>
+                                <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Total Harga</th>
+                                <th class="w-1/8 py-3 px-4 uppercase font-semibold text-sm">Dibayar</th>
+                                <th class="w-1/8 py-3 px-4 uppercase font-semibold text-sm">Kembalian</th>
                                 <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
                             <?php if (!empty($sales)) {
-                                // var_dump($sales);
                                 foreach ($sales as $sale) { ?>
                             <tr class="text-center">
                                 <td class="py-3 px-4 text-blue-600">
                                     <?php echo htmlspecialchars($sale->sale_id); ?></td>
                                 <!-- <td class="w-1/4 py-3 px-4"><?php echo htmlspecialchars($sale->sale_date); ?></td> -->
-                                <td class="w-1/4 py-3 px-4">
-                                    <?php $user = $modelUser->getUserById($sale->id_user);$role = $modelRole->getRoleById($user->id_role); echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]"); ?>
+                                <td class="w-1/6 py-3 px-4">
+                                    <?php $user = $modelUser->getUserById($sale->id_user);$role = $modelRole->getRoleById($user->role_id); echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]"); ?>
                                 </td>
-                                <td class="w-1/4 py-3 px-4">
+                                <td class="w-1/12 py-3 px-4">
                                     <?php $member = $modelMember->getMemberById($sale->id_member); echo htmlspecialchars($member->name); ?>
                                 </td>
-                                <td class="w-1/4 py-3 px-4"><?php echo htmlspecialchars($sale->sale_totalPrice); ?></td>
-                                <td class="w-1/6 py-3 px-4"><?php echo htmlspecialchars($sale->sale_pay); ?></td>
-                                <td class="w-1/6 py-3 px-4"><?php echo htmlspecialchars($sale->sale_change); ?></td>
+                                <td class="w-1/6 py-3 px-4"><?php echo htmlspecialchars($sale->sale_totalPrice); ?></td>
+                                <td class="w-1/8 py-3 px-4"><?php echo htmlspecialchars($sale->sale_pay); ?></td>
+                                <td class="w-1/8 py-3 px-4"><?php echo htmlspecialchars($sale->sale_change); ?></td>
                                 <td class="w-1/6 py-3 px-4">
                                     <div class="flex items-center space-x-4">
                                         <button onclick="openModal('modal-<?php echo $sale->sale_id; ?>')" class="group relative inline-flex h-10 w-10 items-center justify-center
@@ -107,17 +132,17 @@ $sales = $modelSale->getAllSales();
                                                 </svg>
                                             </div>
                                         </button>
+                                        <!-- Print PDF Button -->
+                                        <button onclick="printSales()"
+                                            class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded">
+                                            <i class="fa fa-print pr-1"></i>Cetak PDF
+                                        </button>
 
                                         <!-- <button
-                                            class="border-2 border-gray-700 bg-white hover:bg-gray-800 hover:text-white text-gray-800 font-bold py-1 px-2 rounded"
-                                            onclick="openModal('modal-<?php echo $sale->sale_id; ?>')">
-                                            Details
-                                        </button> -->
-                                        <button
                                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2"
                                             onclick="return confirmDelete(<?= $sale->sale_id ?>)">
                                             <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                        </button> -->
                                     </div>
 
                                 </td>
@@ -151,7 +176,7 @@ $sales = $modelSale->getAllSales();
                     <div class="font-semibold text-gray-700">User</div>
                     <div><?php 
                         $user = $modelUser->getUserById($sale->id_user);
-                        $role = $modelRole->getRoleById($user->id_role);
+                        $role = $modelRole->getRoleById($user->role_id);
                         echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]");
                     ?></div>
                 </div>
@@ -226,52 +251,126 @@ $sales = $modelSale->getAllSales();
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script>
+    const salesData = <?php echo json_encode($salesPrint); ?>;
+
+    function printSales() {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+
+        let htmlContent = `
+        <html>
+        <head>
+            <title>Cetak PDF Sale List</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                }
+                h1, h2 {
+                    text-align: center;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 10px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #4CAF50;
+                    color: white;
+                }
+                tbody tr:nth-child(even) {
+                    background-color: #f9f9f9;
+                }
+                .barcode-container {
+                    text-align: center;
+                    margin-top: 40px;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Warkop MJ</h1>
+            <h2>Daftar Penjualan</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Sale</th>
+                        <th>User</th>
+                        <th>Member</th>
+                        <th>Total Harga</th>
+                        <th>Dibayar</th>
+                        <th>Kembalian</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        salesData.forEach(sale => {
+            const user = `${sale.user_username} - [${sale.role_name}]`;
+            const member = sale.member_name;
+            htmlContent += `
+            <tr>
+                <td>${sale.sale_id}</td>
+                <td>${user}</td>
+                <td>${member}</td>
+                <td>${sale.sale_totalPrice}</td>
+                <td>${sale.sale_pay}</td>
+                <td>${sale.sale_change}</td>
+            </tr>
+        `;
+        });
+
+        htmlContent += `
+                </tbody>
+            </table>
+            <div class="barcode-container">
+                <svg id="barcode"></svg>
+            </div>
+        </body>
+        </html>
+        `;
+
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+
+        // Generate Barcode
+        const saleIds = salesData.map(sale => sale.sale_id).join(', ');
+        printWindow.onload = function() {
+            const barcodeElement = printWindow.document.getElementById('barcode');
+            JsBarcode(barcodeElement, saleIds, {
+                format: "CODE128",
+                lineColor: "#4CAF50",
+                width: 2,
+                height: 40,
+                displayValue: true,
+                fontSize: 14,
+                margin: 10,
+                textMargin: 5
+            });
+
+            printWindow.print();
+        };
+    }
+    </script>
+
+
     <script>
     // delete sale
     function deleteSale(saleId) {
         if (confirm('Apakah Anda yakin ingin menghapus penjualan ini?')) {
             // Redirect to delete page with fitur=delete
-            window.location.href = `/project_akhir/response_input.php?modul=sale&fitur=delete&id=${saleId}`;
+            window.location.href = `../../response_input.php?modul=sale&fitur=delete&id=${saleId}`;
         } else {
             alert("Penghapusan data dibatalkan");
         }
     }
-
-
-    //TESTING
-    // function addSale(saleId) {
-    //     const newSale = {
-    //         details: [{
-    //                 id_sale: 4,
-    //                 item_id: 1,
-    //                 item_name: "New Item",
-    //                 item_price: 20000,
-    //                 item_qty: 10
-    //             },
-    //             {
-    //                 id_sale: 4,
-    //                 item_id: 2,
-    //                 item_name: "Another Item",
-    //                 item_price: 30000,
-    //                 item_qty: 5
-    //             }
-    //         ],
-    //         pay: 100000,
-    //         change: 20000,
-    //         total: 80000,
-    //         date: "01-11-2024"
-    //     };
-
-    //     fetch('/project_akhir/response_input.php?modul=sale&fitur=add', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(newSale)
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => console.log(data));
-    // }
     </script>
 
 </body>

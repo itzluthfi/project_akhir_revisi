@@ -1,7 +1,7 @@
 <?php
-// require_once "/laragon/www/project_akhir/model/dbConnect.php";
-// require_once "/laragon/www/project_akhir/domain_object/node_role.php";
-require_once __DIR__ . '/dbConnectNew.php';
+
+require_once __DIR__ . '../../config/dbConnectNew.php';
+
 require_once __DIR__ . '../../domain_object/node_role.php';
 
 
@@ -94,8 +94,5 @@ class modelRole {
         }
     }
 
-    public function __destruct() {
-        // Menutup koneksi database
-        $this->db->close();
-    }
+
 }

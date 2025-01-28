@@ -131,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ObjData.member_id = <?= $idAnggota ?>; // ID Anggota
 
         try {
+
             console.log(ObjData);
             // Kirim data form ke server
             const response = await fetch('./placeOrderMidtrans.php', {

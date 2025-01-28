@@ -56,6 +56,9 @@ class ControllerSale {
                     echo "<script>alert('Data yang dikirim tidak lengkap!'); window.history.back();</script>";
                 }
                 break;
+
+            // case 'checkout':
+                
                 
 
             case 'delete':

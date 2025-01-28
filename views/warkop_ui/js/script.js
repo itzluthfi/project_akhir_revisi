@@ -69,23 +69,3 @@ itemdetailbuttons.forEach((btn) => {
     itemdetailmodal.style.display = "flex"; // Tampilkan modal
   };
 });
-
-//logika contact form
-// function submitToWhatsApp(event) {
-//   event.preventDefault();
-
-//   // Mengambil nilai dari input
-//   const name = document.getElementById("name").value;
-//   const email = document.getElementById("email").value;
-//   const phone = document.getElementById("phone").value;
-
-//   // ID nomor WhatsApp tujuan
-//   const phoneNumber = "6289507370805"; // Ganti dengan nomor WhatsApp tujuan
-
-//   // Format pesan yang akan dikirim
-//   const message = `Halo, saya ${name}.%0AEmail: ${email}%0ANo HP: ${phone}%0ASaya ingin menghubungi Anda.`;
-
-//   // Mengarahkan ke WhatsApp
-//   const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
-//   window.open(whatsappURL, "_blank");
-// }

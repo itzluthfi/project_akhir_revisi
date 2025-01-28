@@ -26,7 +26,7 @@
 
         <!-- Background Img -->
         <div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-75"
-            style="background-image: url('public/img/bg-coffe.jpg');"></div>
+            style="background-image: url('../public/img/bg-coffe.jpg');"></div>
 
 
         <!-- Overlay to darken video -->
@@ -80,7 +80,7 @@
 
             <!-- Login Image Banner -->
             <div class="flex items-center justify-center bg-gray-300 relative transition-opacity opacity-70 hover:opacity-100 duration-1000"
-                style="width: 24rem; height: 32rem; background-image: url('public/img/bg-coffe.jpg'); background-size: cover; background-position: center;">
+                style="width: 24rem; height: 32rem; background-image: url('../public/img/bg-coffe.jpg'); background-size: cover; background-position: center;">
             </div>
 
         </div>

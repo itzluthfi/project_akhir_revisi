@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
                 break;
 
         default:
-            //echo "<script>alert('Module tidak dikenal.'); window.location.href='views/{$modul}/{$modul}_list.php';</script>";
+            echo "<script>alert('Module tidak dikenal.'); window.history.back();</script>";
             break;
     }
 }

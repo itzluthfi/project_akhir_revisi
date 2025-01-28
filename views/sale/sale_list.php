@@ -91,16 +91,44 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
                             <tr>
                                 <th class="w-1/12 py-3 px-4 uppercase font-semibold text-sm">ID sale</th>
                                 <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">User</th>
-                                <th class="w-1/12 py-3 px-4 uppercase font-semibold text-sm">Member</th>
+                                <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Member</th>
                                 <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Total Harga</th>
-                                <th class="w-1/8 py-3 px-4 uppercase font-semibold text-sm">Dibayar</th>
-                                <th class="w-1/8 py-3 px-4 uppercase font-semibold text-sm">Kembalian</th>
+                                <th class="w-1/8 py-3 px-4 uppercase font-semibold text-sm">Date</th>
                                 <th class="w-1/6 py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
                             <?php if (!empty($sales)) {
-                                foreach ($sales as $sale) { ?>
+                                foreach ($sales as $sale) { 
+                                    $user = $modelUser->getUserById($sale->id_user);
+                                    $role = $modelRole->getRoleById($user->role_id);
+                                    $member = $modelMember->getMemberById($sale->id_member);
+                                
+                                    $detailSale = [];
+                                    foreach ($sale->detailSale as $detail) {
+                                        $item = $modelItem->getItemById($detail->item_id);
+                                        $detailSale[] = [
+                                            'item_id' => $detail->item_id,
+                                            'item_name' => $item->item_name,
+                                            'item_price' => $item->item_price,
+                                            'item_qty' => $detail->item_qty,
+                                            'sub_total' => $item->item_price * $detail->item_qty,
+                                        ];
+                                    }
+                            
+                                    // Add all to salePrint
+                                    $salePrint = [
+                                        'sale_id' => $sale->sale_id,
+                                        'sale_totalPrice' => $sale->sale_totalPrice,
+                                        'sale_pay' => $sale->sale_pay,
+                                        'sale_change' => $sale->sale_change,
+                                        'user_username' => $user->user_username,
+                                        'role_name' => $role->role_name,
+                                        'member_name' => $member->name,
+                                        'detailSale' => $detailSale, // Add detailSale here
+                                    ]
+                                    
+                            ?>
                             <tr class="text-center">
                                 <td class="py-3 px-4 text-blue-600">
                                     <?php echo htmlspecialchars($sale->sale_id); ?></td>
@@ -108,12 +136,11 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
                                 <td class="w-1/6 py-3 px-4">
                                     <?php $user = $modelUser->getUserById($sale->id_user);$role = $modelRole->getRoleById($user->role_id); echo htmlspecialchars("{$user->user_username} - [{$role->role_name}]"); ?>
                                 </td>
-                                <td class="w-1/12 py-3 px-4">
+                                <td class="w-1/6 py-3 px-4">
                                     <?php $member = $modelMember->getMemberById($sale->id_member); echo htmlspecialchars($member->name); ?>
                                 </td>
                                 <td class="w-1/6 py-3 px-4"><?php echo htmlspecialchars($sale->sale_totalPrice); ?></td>
-                                <td class="w-1/8 py-3 px-4"><?php echo htmlspecialchars($sale->sale_pay); ?></td>
-                                <td class="w-1/8 py-3 px-4"><?php echo htmlspecialchars($sale->sale_change); ?></td>
+                                <td class="w-1/8 py-3 px-4"><?php echo htmlspecialchars($sale->sale_date); ?></td>
                                 <td class="w-1/6 py-3 px-4">
                                     <div class="flex items-center space-x-4">
                                         <button onclick="openModal('modal-<?php echo $sale->sale_id; ?>')" class="group relative inline-flex h-10 w-10 items-center justify-center
@@ -132,8 +159,10 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
                                                 </svg>
                                             </div>
                                         </button>
+
                                         <!-- Print PDF Button -->
-                                        <button onclick="printSales()"
+                                        <button
+                                            onclick="printSale(<?= htmlspecialchars(json_encode($salePrint), ENT_QUOTES, 'UTF-8') ?>)"
                                             class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded">
                                             <i class="fa fa-print pr-1"></i>Cetak PDF
                                         </button>
@@ -173,6 +202,11 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
             <div class="space-y-4">
                 <!-- Informasi Sales -->
                 <div class="flex justify-between">
+                    <div class="font-semibold text-gray-700">Date</div>
+                    <div><?php echo htmlspecialchars($sale->sale_date); ?></div>
+
+                </div>
+                <div class="flex justify-between">
                     <div class="font-semibold text-gray-700">User</div>
                     <div><?php 
                         $user = $modelUser->getUserById($sale->id_user);
@@ -188,6 +222,7 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
                         echo htmlspecialchars($member->name);
                     ?></div>
                 </div>
+
 
                 <div class="flex justify-between">
                     <div class="font-semibold text-gray-700">Total Harga</div>
@@ -208,7 +243,7 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
                 <div class="mt-6">
                     <h4 class="text-lg font-semibold text-gray-800">Detail Barang</h4>
                     <table class="min-w-full bg-white table-auto mt-4 rounded-lg overflow-hidden shadow-md">
-                        <thead class="bg-[#b6895b] text-white">
+                        <thead class="bg-gray-800 text-white">
                             <tr>
                                 <th class="py-3 px-4 text-left">ID</th>
                                 <th class="py-3 px-4 text-left">Nama</th>
@@ -256,6 +291,144 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
     <script>
     const salesData = <?php echo json_encode($salesPrint); ?>;
 
+
+    function printSale(sale) {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+
+        let htmlContent = `
+    <html>
+    <head>
+        <title>Cetak PDF Sale</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            h1, h2 {
+                text-align: center;
+            }
+            .info-section {
+                margin: 20px 0;
+                line-height: 1.6;
+                font-size: 14px;
+            }
+            .info-section .label {
+                font-weight: bold;
+            }
+            .sale-summary {
+                background-color: #f7f7f7;
+                padding: 15px;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+            th {
+                background-color: rgb(15, 125, 250);
+                color: white;
+            }
+            tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            .barcode-container {
+                text-align: center;
+                margin-top: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Warkop MJ</h1>
+        <div class="sale-summary">
+            <div class="info-section">
+                <span class="label">ID Sale:</span> ${sale.sale_id}
+            </div>
+            <div class="info-section">
+                <span class="label">Kasir:</span> ${sale.user_username} - [${sale.role_name}]
+            </div>
+            <div class="info-section">
+                <span class="label">Member:</span> ${sale.member_name}
+            </div>
+            <div class="info-section">
+                <span class="label">Total Harga:</span> Rp ${sale.sale_totalPrice.toLocaleString()}
+            </div>
+            <div class="info-section">
+                <span class="label">Dibayar:</span> Rp ${sale.sale_pay.toLocaleString()}
+            </div>
+            <div class="info-section">
+                <span class="label">Kembalian:</span> Rp ${sale.sale_change.toLocaleString()}
+            </div>
+        </div>
+        
+        <h2>Detail Item</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Item</th>
+                    <th>Nama Item</th>
+                    <th>Harga Satuan</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+        sale.detailSale.forEach(detail => {
+            htmlContent += `
+        <tr>
+            <td>${detail.item_id}</td>
+            <td>${detail.item_name}</td>
+            <td>Rp ${detail.item_price.toLocaleString()}</td>
+            <td>${detail.item_qty}</td>
+            <td>Rp ${(detail.item_price * detail.item_qty).toLocaleString()}</td>
+        </tr>
+        `;
+        });
+
+        htmlContent += `
+            </tbody>
+        </table>
+        <div class="barcode-container">
+            <svg id="barcode"></svg>
+        </div>
+    </body>
+    </html>
+    `;
+
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+
+        // Generate Barcode
+        printWindow.onload = function() {
+            const barcodeElement = printWindow.document.getElementById('barcode');
+            JsBarcode(barcodeElement, sale.sale_id, {
+                format: "CODE128",
+                lineColor: "rgb(15, 125, 250)",
+                width: 2,
+                height: 40,
+                displayValue: true,
+                fontSize: 14,
+                margin: 10,
+                textMargin: 5
+            });
+
+            printWindow.print();
+        };
+    }
+
+
+
+
     function printSales() {
         const printWindow = window.open('', '_blank');
         printWindow.document.open();
@@ -283,7 +456,7 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
                     text-align: left;
                 }
                 th {
-                    background-color: #4CAF50;
+                    background-color: rgb(15, 125, 250);
                     color: white;
                 }
                 tbody tr:nth-child(even) {
@@ -346,7 +519,7 @@ $salesPrint = array_map(function ($sale) use ($modelUser, $modelRole, $modelMemb
             const barcodeElement = printWindow.document.getElementById('barcode');
             JsBarcode(barcodeElement, saleIds, {
                 format: "CODE128",
-                lineColor: "#4CAF50",
+                lineColor: "rgb(15, 125, 250)",
                 width: 2,
                 height: 40,
                 displayValue: true,

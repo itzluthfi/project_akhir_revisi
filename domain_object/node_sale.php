@@ -9,19 +9,13 @@ class Sale {
     public string $sale_date;
     public int $id_user;
     public int $id_member;
-
     /** @var DetailSale[] */
     public array $detailSale = []; // Menggunakan array untuk menyimpan daftar DetailSale
 
-    public function __construct(
-        int $sale_id,
-        float $sale_pay,
-        float $sale_change,
-        float $sale_totalPrice,
-        string $sale_status,
-        string $sale_date,
-        int $id_user,
-        int $id_member,
+    public function __construct(int $sale_id,float $sale_pay,
+        float $sale_change,float $sale_totalPrice,
+        string $sale_status,string $sale_date,
+        int $id_user,int $id_member,
         /** @var DetailSale[] */
         array $detailSale = [] // Menempatkan $detailSale sebagai parameter opsional terakhir
     ) {

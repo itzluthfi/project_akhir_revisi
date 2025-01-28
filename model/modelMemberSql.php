@@ -1,17 +1,14 @@
 <?php
 
-require_once __DIR__ . '../../config/dbConnectNew.php';
+require_once __DIR__ . '../../config/abstractDatabase.php';
 
 require_once __DIR__ . '../../domain_object/node_member.php';
 
 
-class modelMember {
-    private $db;
+class modelMember extends AbstractDatabase {
 
     public function __construct() {
-        // Inisialisasi koneksi database
-        $this->db = Databases::getInstance();
-
+        parent::__construct();
         $this->initializeDefaultMembers();
     }
 

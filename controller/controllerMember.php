@@ -18,6 +18,8 @@ class ControllerMember {
                 $member_point = $_POST['member_point'];
                 if ($this->modelMember->addMember($member_name,$member_password, $member_phone, $member_point)) {
                     $message = "Member added successfully!";
+                    
+
                 } else {
                     $message = "Failed to add member22.";
                 }

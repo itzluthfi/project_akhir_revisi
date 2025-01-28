@@ -1,5 +1,7 @@
 <?php
-require_once "../model/modelCartSql.php";
+// require_once "../model/modelCartSql.php";
+
+require_once __DIR__ . '../../model/modelCartSql.php';
 
 class ControllerCart {
     private $modelCart;
@@ -59,23 +61,30 @@ class ControllerCart {
                 break;
 
                 case 'checkout':
-                    if (isset($_GET['id'])) {
-                        $cart_id = $_GET['id'];
-                        $result = $this->modelCart->deleteCartsBySaleId($cart_id);
+                    try {
+                        if (isset($_GET['id'])) {
+                            $cart_id = $_GET['id'];
                 
-                        if ($result === true) {
-                            $message = "Checkout successful! Your cart has been cleared.";
+                            // Coba melakukan proses penghapusan cart berdasarkan sale ID
+                            $result = $this->modelCart->deleteCartsBySaleId($cart_id);
+                
+                            if ($result === true) {
+                                $message = "Checkout berhasil dilakukan! Keranjang berhasil dihapus.";
+                            } else {
+                                // Jika hasil bukan true, anggap sebagai error
+                                throw new Exception("Gagal melakukan checkout. Error: $result");
+                            }
                         } else {
-                            $message = "Failed to checkout. Error: $result"; 
+                            // Jika ID tidak diberikan
+                            throw new Exception("tidak ada ID cart yang diberikan");
                         }
-                    } else {
-                        $message = "Cart ID not provided for checkout.";
+                    } catch (Exception $e) {
+                        // Tangkap exception dan simpan pesan error
+                        $message = $e->getMessage();
                     }
-                
                     // Redirect dengan pesan
                     echo "<script>alert('$message'); window.location.href='./views/warkop_ui/index.php';</script>";
                     break;
-                
 
             default:
                 $message = "Action not recognized for cart.";

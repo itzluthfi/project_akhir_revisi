@@ -138,6 +138,17 @@ class modelCart {
             return $e->getMessage();
         }
     }
+    public function deleteCartsByUserId($user_id) {
+        $query = "DELETE FROM carts WHERE user_id = $user_id";
+        try {
+            $this->db->execute($query);
+            // Perbarui data dari database
+            $this->carts = $this->getAllCartItemsFromDB();
+            return true;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
 
 
 }

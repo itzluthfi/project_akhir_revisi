@@ -1,9 +1,29 @@
 <?php
  require_once __DIR__ . '../../../init.php';
 //  require_once __DIR__ . '../../../auth_check.php';
-$sales = $modelSale->getAllSalesMidtrans();
 $user = unserialize($_SESSION['member_login']);
-// var_dump($user);
+$sales = $modelSale->getSaleByMemberIdMidtrans($user->id);
+
+// echo "<pre>";
+// print_r($sales);
+// echo "</pre>";
+// die();
+
+$salesPrint = array_map(function ($sale) use ($modelMember) {
+    // $user = $modelUser->getUserById($sale->id_user);
+    // $role = $modelRole->getRoleById($user->role_id);
+    $member = $modelMember->getMemberById($sale->id_member);
+
+    return [
+        'sale_id' => $sale->sale_id,
+        'sale_totalPrice' => $sale->sale_totalPrice,
+        'sale_status' => $sale->sale_status,
+        'sale_date' => $sale->sale_date,
+        // 'user_username' => $user->user_username,
+        'role_name' => "Member",
+        'member_name' => $member->name,
+    ];
+}, $sales);
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +131,14 @@ $user = unserialize($_SESSION['member_login']);
         </div>
 
         <div class="bg-base-100 rounded-box shadow-xl p-6 backdrop-blur-sm bg-opacity-80">
-            <h2 class="text-2xl font-bold mb-4">Sales History</h2>
+            <div class="flex justify-left items-center mb-4">
+                <h2 class="text-2xl font-bold mb-4">Sales History</h2>
+                <!-- Print PDF Button -->
+                <button onclick="printSales()"
+                    class="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 mb-2 rounded">
+                    <i class="fa fa-print"></i> Cetak All Sale PDF
+                </button>
+            </div>
             <div class="overflow-x-auto max-h-[360px] overflow-y-auto">
                 <table class="table w-full">
                     <thead>
@@ -128,7 +155,11 @@ $user = unserialize($_SESSION['member_login']);
                         <tr>
                             <td><?= $sale->sale_id ?> </td>
                             <td><?= $sale->sale_totalPrice ?></td>
-                            <td><span class="badge badge-success"><?= $sale->sale_status ?></span></td>
+                            <td><span
+                                    class="<?= $sale->sale_status == "pending" ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600' ?> 
+    inline-flex items-center justify-center px-4 py-1 rounded-full text-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105">
+                                    <?= $sale->sale_status == "pending" ? "Pending" : "Settlement" ?>
+                                </span></span></td>
                             <td><?= $sale->sale_date ?></td>
                             <td><label for="modal-001" class="btn btn-custom btn-sm">Details</label></td>
                         </tr>
@@ -259,7 +290,240 @@ $user = unserialize($_SESSION['member_login']);
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
     <script>
+    const salesData = <?php echo json_encode($salesPrint); ?>;
+
+    function printSale(sale) {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+
+        let htmlContent = `
+<html>
+<head>
+    <title>Cetak Detail Penjualan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .info-section {
+            margin: 20px 0;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .info-section .label {
+            font-weight: bold;
+        }
+        .ringkasan-penjualan {
+            background-color: #f7f7f7;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color:rgb(15, 125, 250);
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .status {
+            display: inline-block;
+            padding: 0.5em 1em;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-settlement {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body>
+    <h1>Warkop MJ</h1>
+    <div class="ringkasan-penjualan">
+        <div class="info-section">
+            <span class="label">ID Penjualan:</span> ${sale.sale_id}
+        </div>
+        <div class="info-section">
+            <span class="label">Member:</span> ${sale.member_name}
+        </div>
+        <div class="info-section">
+            <span class="label">Total Harga:</span> Rp ${sale.sale_totalPrice.toLocaleString()}
+        </div>
+        <div class="info-section">
+            <span class="label">Status:</span> 
+            <span class="status ${sale.sale_status === 'pending' ? 'status-pending' : 'status-settlement'}">
+                ${sale.sale_status === 'pending' ? 'Pending' : 'Settlement'}
+            </span>
+        </div>
+    </div>
+
+    <h2>Detail Item</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Item</th>
+                <th>Nama Item</th>
+                <th>Harga Satuan</th>
+                <th>Jumlah</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+`;
+
+        sale.detailSale.forEach(detail => {
+            htmlContent += `
+    <tr>
+        <td>${detail.item_id}</td>
+        <td>${detail.item_name}</td>
+        <td>Rp ${detail.item_price.toLocaleString()}</td>
+        <td>${detail.item_qty}</td>
+        <td>Rp ${(detail.item_price * detail.item_qty).toLocaleString()}</td>
+    </tr>
+    `;
+        });
+
+        htmlContent += `
+        </tbody>
+    </table>
+</body>
+</html>
+`;
+
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+
+    function printSales() {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+
+        let htmlContent = `
+<html>
+<head>
+    <title>Cetak Daftar Penjualan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: rgb(15, 125, 250);
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .barcode-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Warkop MJ</h1>
+    <h2>Daftar Penjualan</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Penjualan</th>
+                <th>Member</th>
+                <th>Total Harga</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+`;
+
+        salesData.forEach(sale => {
+            const member = sale.member_name;
+            htmlContent += `
+    <tr>
+        <td>${sale.sale_id}</td>
+        <td>${member}</td>
+        <td>Rp ${sale.sale_totalPrice.toLocaleString()}</td>
+        <td> ${sale.sale_status.toLocaleString()}</td>
+        <td> ${sale.sale_date.toLocaleString()}</td>
+    </tr>
+    `;
+        });
+
+        htmlContent += `
+        </tbody>
+    </table>
+    <div class="barcode-container">
+        <svg id="barcode"></svg>
+    </div>
+</body>
+</html>
+`;
+
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+
+        // Generate Barcode
+        const saleIds = salesData.map(sale => sale.sale_id).join(', ');
+        printWindow.onload = function() {
+            const barcodeElement = printWindow.document.getElementById('barcode');
+            JsBarcode(barcodeElement, saleIds, {
+                format: "CODE128",
+                lineColor: "rgb(15, 125, 250)",
+                width: 2,
+                height: 40,
+                displayValue: true,
+                fontSize: 14,
+                margin: 10,
+                textMargin: 5
+            });
+
+            printWindow.print();
+        };
+    }
+
+
+
+
     function togglePasswordVisibility() {
         const passwordField = document.getElementById('password-field');
         const toggleIcon = document.getElementById('toggle-icon');

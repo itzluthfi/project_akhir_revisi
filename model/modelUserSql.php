@@ -27,7 +27,6 @@ class modelUser {
     }
 
     public function addUser($user_username, $user_password, $id_role) {
-        // Escape input untuk mencegah SQL Injection
         $user_username = mysqli_real_escape_string($this->db->conn, $user_username);
         $user_password = mysqli_real_escape_string($this->db->conn, $user_password);
         $id_role = (int)$id_role;
@@ -65,35 +64,55 @@ class modelUser {
     public function getAllUser() {
         $query = "SELECT * FROM users";
         $result = $this->db->select($query);
-        $role = $this->getRoleById($result[0]['role_id']);
+    
+        // Jika hasil query kosong, kembalikan null
+        if (empty($result)) {
+            return null;
+        }
+    
         $users = [];
         foreach ($result as $row) {
-            // Membuat objek User dan menyimpannya ke array
-            $users[] = new User($row['id'], $row['username'], $row['password'], $row['role_id'], $role->role_name, $role->role_description, $role->role_status, $role->role_gaji);
+            $role = $this->getRoleById($row['role_id']); // Ambil role berdasarkan role_id
+            $users[] = new User(
+                $row['id'],
+                $row['username'],
+                $row['password'],
+                $row['role_id'],
+                $role ? $role->role_name : null,
+                $role ? $role->role_description : null,
+                $role ? $role->role_status : null,
+                $role ? $role->role_gaji : null
+            );
         }
-
-       
-        
+    
         return $users;
     }
+    
 
     public function getUserById($id) {
         $query = "SELECT * FROM users WHERE id = $id";
         $result = $this->db->select($query);
-        $role = $this->getRoleById($result[0]['role_id']);
-        
-
-        if (count($result) > 0) {
-            $row = $result[0];
-            $user = new User($row['id'], $row['username'], $row['password'], $row['role_id'], $role->role_name, $role->role_description, $role->role_status, $role->role_gaji);
-            
-
-
-            return $user;
+    
+        // Jika hasil query kosong, kembalikan null
+        if (empty($result)) {
+            return null;
         }
-        
-        return null;
+    
+        $row = $result[0];
+        $role = $this->getRoleById($row['role_id']); // Ambil role berdasarkan role_id
+    
+        return new User(
+            $row['id'],
+            $row['username'],
+            $row['password'],
+            $row['role_id'],
+            $role ? $role->role_name : null,
+            $role ? $role->role_description : null,
+            $role ? $role->role_status : null,
+            $role ? $role->role_gaji : null
+        );
     }
+    
 
     public function updateUser($id, $user_username, $user_password, $id_role) {
         // Escape input untuk mencegah SQL Injection

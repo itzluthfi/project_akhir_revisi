@@ -15,7 +15,6 @@ class ModelSaleSql {
     public function __construct() {
         // Inisialisasi koneksi database
         $this->db = Databases::getInstance();
-        // $this->initializeDefaultItems(); // Anda bisa menambahkan ini jika ingin menambahkan item default saat pertama kali  
     }
 
     public function addSale($detailSale, int $salePay, int $saleChange, int $saleTotalPrice, $saleDate, int $user_id,  $member_id) {
@@ -94,7 +93,7 @@ class ModelSaleSql {
                     $quantity = isset($item['item_qty']) && $item['item_qty'] !== '' ? (int)$item['item_qty'] : null;
     
                     if ($item_id !== null && $quantity !== null) {
-                        $detailQuery = "INSERT INTO detailsales (id, sale_id, item_id, quantity) 
+                        $detailQuery = "INSERT INTO detail_sale_midtrans (id, sale_id, item_id, quantity) 
                                         VALUES (NULL, $saleId, $item_id, $quantity)";
                         $this->db->execute($detailQuery);
     
@@ -114,15 +113,22 @@ class ModelSaleSql {
             return false;
         }
     }
-    
-     
-
-    
-    
-    
 
     public function getAllSalesMidtrans() {
         $query = "SELECT * FROM sales_midtrans";
+        $result = $this->db->select($query);
+        // $sale_status = "settlement";
+        $sales = [];
+        foreach ($result as $row) {
+            $saleId = $row['id'];
+            $details = $this->getDetailsBySaleId($saleId);
+            $sales[] = new Sale($saleId, 0, 0, $row['total_price'],$row['status'], $row['date'], $row['user_id'], $row['member_id'], $details);
+        }
+        return $sales;
+    }
+
+    public function getSaleByMemberIdMidtrans($member_id) {
+        $query = "SELECT * FROM sales_midtrans WHERE member_id = $member_id";
         $result = $this->db->select($query);
         // $sale_status = "settlement";
         $sales = [];
@@ -177,7 +183,7 @@ class ModelSaleSql {
         $saleId = (int)$saleId;
 
         // Hapus detail sales terlebih dahulu
-        $detailQuery = "DELETE FROM detailsales WHERE sale_id = $saleId";
+        $detailQuery = "DELETE * FROM detailsales WHERE sale_id = $saleId";
 
         try {
             $this->db->execute($detailQuery);
